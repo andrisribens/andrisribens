@@ -50,6 +50,9 @@ export async function getWeather(lat:number, long:number): Promise<WeatherData> 
   try {
     const res = await fetch(url, {
       cache: 'no-store',
+      headers: {
+        'User-Agent': 'andrisribens.com (andris.ribens@gmail.com)',
+      },
     });
 
     if (!res.ok) {
@@ -92,6 +95,9 @@ export async function getPlaceStructured(placeQuery: string): Promise<Place[]> {
   try {
     const res = await fetch(url, {
       cache: 'no-store',
+      headers: {
+        'User-Agent': 'andrisribens.com (andris.ribens@gmail.com)',
+      },
     });
 
     if (!res.ok) {
@@ -114,6 +120,9 @@ export async function getPlaceFree(placeQuery: string): Promise<Place[]> {
   try {
     const res = await fetch(url, {
       cache: 'no-store',
+      headers: {
+        'User-Agent': 'andrisribens.com (andris.ribens@gmail.com)',
+      },
     });
 
     if (!res.ok) {
