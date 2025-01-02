@@ -1,0 +1,28 @@
+// .numbers {
+//     height: 300px;
+//     width: 80%;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     padding: 40px;
+//     color: black;
+//     margin: 100px auto;
+// }
+
+
+.numberCard {
+    padding: 60px;
+    border-radius: 20px;
+    font-size: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: black;
+    margin: 0 auto;
+    gap: 20px;
+
+    h2 {
+        margin: 0;
+    }
+}

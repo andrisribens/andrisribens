@@ -1,0 +1,34 @@
+@use '../../styles/variables.scss' as *;
+
+
+.switch {
+    background-color: $orange;
+    border-radius: 3rem;
+    width: 7rem;
+    height: 2.5rem;
+    display: flex;
+    justify-content: flex-start;
+    padding: 0.3rem 0.4rem;
+    cursor: pointer;
+
+    header & {
+        margin-left: auto;
+    }
+
+    &.active {
+        background-color: red;
+
+        .switch__ball {
+            transform: translateX(4.3rem);
+        }
+    }
+
+    &__ball {
+        border-radius: 50%;
+        background-color: white;
+        flex-shrink: 0;
+        width: 1.9rem;
+        height: 1.9rem;
+        transition: all .3s;
+    }
+}

@@ -1,0 +1,21 @@
+.weatherFact {
+  background-color: yellow;
+  height: 100%;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
+  padding: 60px;
+}
+.weatherFact__tempvalue {
+  font-size: 90px;
+  font-weight: 800;
+  color: blue;
+}
+.weatherFact__templabel {
+  font-size: 40px;
+}
+
+/*# sourceMappingURL=WeatherFact.module.css.map */

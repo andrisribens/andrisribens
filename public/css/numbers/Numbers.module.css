@@ -1,0 +1,19 @@
+.numbers {
+  height: 300px;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: black;
+  margin: 100px auto;
+  gap: 30px;
+  background-color: orange;
+}
+.numbers button {
+  padding: 10px 30px;
+  font-size: 80px;
+  font-weight: 900;
+}
+
+/*# sourceMappingURL=Numbers.module.css.map */

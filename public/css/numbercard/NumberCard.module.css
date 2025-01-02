@@ -1,0 +1,17 @@
+.numberCard {
+  padding: 60px;
+  border-radius: 20px;
+  font-size: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: black;
+  margin: 0 auto;
+  gap: 20px;
+}
+.numberCard h2 {
+  margin: 0;
+}
+
+/*# sourceMappingURL=NumberCard.module.css.map */

@@ -1,0 +1,40 @@
+.weather {
+  height: 100%;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
+  padding: 60px;
+}
+.weather__templabel {
+  font-size: 24px;
+}
+
+.weatherCard {
+  padding: 30px;
+  border-radius: 20px;
+  background-color: white;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  border-bottom: 3px solid orange;
+}
+
+.weatherItem__value {
+  font-size: 32px;
+  font-weight: 700;
+  display: inline;
+}
+.weatherItem__unit {
+  font-size: 14px;
+  display: inline;
+}
+.weatherItem__label {
+  font-size: 10px;
+  display: block;
+}
+
+/*# sourceMappingURL=WeatherFact.module.css.map */
