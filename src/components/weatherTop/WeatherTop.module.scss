@@ -1,0 +1,38 @@
+@use '../../styles/variables.scss' as var;
+@use '../../styles/mixins' as *;
+
+
+.weatherTop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    &__inner {
+        display: flex;
+        justify-content: flex-end;
+
+        img {
+            height: 30rem;
+            width: 30rem;
+        }
+
+        @include resp-max("xl") {
+            justify-content: center;
+            height: 12rem;
+
+            img {
+                height: 12rem;
+                width: auto;
+            }
+        }
+
+        @include resp-max("m") {
+            height: 9rem;
+
+            img {
+                height: 9rem;
+            }
+        }
+    }
+}

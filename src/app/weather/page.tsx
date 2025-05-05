@@ -1,19 +1,19 @@
 import PlaceInput from '@/components/placeInput/PlaceInput';
-import WeatherFact from '@/components/weatherfact/WeatherFact';
+import WeatherFactsServer from '@/components/weatherfacts/WeatherFactsServer';
+import WeatherTop from '@/components/weatherTop/WeatherTop';
 
-export default async function Weather({
-  searchParams,
-}: {
+interface PageProps {
   searchParams: { place?: string };
-}) {
-  const data = await searchParams;
+}
 
-  const placeData = data.place ? data.place : '';
-  console.log('placeData incoming:', placeData);
+export default async function Weather({ searchParams }: PageProps) {
+  const placeData = searchParams?.place ?? '';
+
   return (
     <>
+      <WeatherTop />
       <PlaceInput />
-      {placeData && <WeatherFact placeData={placeData} />}
+      {placeData && <WeatherFactsServer placeData={placeData} />}
     </>
   );
 }

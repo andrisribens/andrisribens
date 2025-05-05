@@ -1,0 +1,79 @@
+@use '../../styles/variables.scss' as var;
+@use "../../styles/mixins" as *;
+
+.weatherCard {
+    padding: 3rem;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 0 8px 0 rgba(black, 0.3);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 0.3rem solid var.$orange;
+    flex: 1;
+    height: 100%;
+
+    @include resp-max("m") {
+        padding: 2rem;
+    }
+
+    @include resp-max("s") {
+        padding: 1.5rem;
+    }
+
+    &__value {
+        font-size: 8.6rem;
+        font-weight: 700;
+        display: inline;
+
+        @include resp-max("m") {
+            font-size: 6rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 4rem;
+        }
+
+        @include resp-min(1800) {
+            font-size: 10rem;
+        }
+    }
+
+    &__unit {
+        font-size: 2.4rem;
+        display: inline;
+        color: var.$orange;
+
+        @include resp-max("m") {
+            font-size: 1.8rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 1.4rem;
+        }
+    }
+
+    &__label {
+        font-size: 2.4rem;
+        display: block;
+        color: var.$gray;
+        margin-top: 1rem;
+
+        @include resp-max("m") {
+            font-size: 1.8rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 1.4rem;
+            margin-top: 0;
+        }
+    }
+
+    img {
+        @include resp-max("s") {
+            width: 4rem;
+            height: 4rem;
+        }
+    }
+}

@@ -1,8 +1,18 @@
 $orange: orange;
 $white: white;
+$black: #212121;
+$gray: grey;
+$gray-light: rgba($gray, 0.6);
+$gray-lightest: rgba($gray, 0.3);
+$blue: rgb(99, 190, 255);
 
 
 
 
-$bg: white;
-$text: black;
+$bg: $white;
+$text: $black;
+
+
+
+
+$main-font: 'Poppins', sans-serif;

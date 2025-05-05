@@ -1,0 +1,153 @@
+.weather {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+.weather__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  position: relative;
+}
+.weather__city {
+  font-size: 7rem;
+  color: orange;
+  font-weight: 900;
+}
+@media (max-width: 1800px) {
+  .weather__city {
+    top: 3rem;
+    font-size: 4.5rem;
+  }
+}
+@media (max-width: 900px) {
+  .weather__city {
+    top: 5rem;
+    font-size: 3.6rem;
+  }
+}
+@media (max-width: 600px) {
+  .weather__city {
+    font-size: 2.4rem;
+  }
+}
+.weather__city.cold {
+  color: rgb(99, 190, 255);
+}
+.weather__city h2 {
+  margin: 0;
+}
+.weather__desc {
+  font-weight: 400;
+  font-size: 1.8rem;
+  margin: 0;
+}
+@media (min-width: 1401px) {
+  .weather__desc {
+    max-width: calc(100% - 33rem);
+  }
+}
+@media (max-width: 900px) {
+  .weather__desc {
+    font-size: 1.6rem;
+  }
+}
+@media (max-width: 600px) {
+  .weather__desc {
+    font-size: 1.2rem;
+  }
+}
+.weather__searchItemsList {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.weather__currentlist {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4rem;
+  width: 100%;
+  margin-bottom: 6rem;
+}
+@media (max-width: 1200px) {
+  .weather__currentlist {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  .weather__currentlist {
+    gap: 2rem;
+  }
+}
+@media (max-width: 600px) {
+  .weather__currentlist {
+    gap: 2rem;
+  }
+}
+@media (max-width: 400px) {
+  .weather__currentlist {
+    grid-template-columns: 1fr;
+  }
+}
+.weather__currentlistitem {
+  aspect-ratio: 3/2;
+  position: relative;
+}
+@media (max-width: 900px) {
+  .weather__currentlistitem {
+    aspect-ratio: unset;
+    min-height: 10rem;
+  }
+}
+.weather__image {
+  object-fit: contain;
+  inset: 0;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+.weather__nexttitle {
+  font-size: 4rem;
+  font-weight: 600;
+  margin-bottom: 3rem;
+}
+@media (max-width: 900px) {
+  .weather__nexttitle {
+    font-size: 3.2rem;
+  }
+}
+@media (max-width: 600px) {
+  .weather__nexttitle {
+    font-size: 2.4rem;
+  }
+}
+.weather__nextlist {
+  margin: 2rem 0 4rem;
+  display: grid;
+  align-self: flex-start;
+  grid-template-columns: repeat(3, 44rem);
+  gap: 3rem;
+}
+@media (max-width: 1500px) {
+  .weather__nextlist {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 1200px) {
+  .weather__nextlist {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  .weather__nextlist {
+    gap: 2rem;
+  }
+}
+@media (max-width: 600px) {
+  .weather__nextlist {
+    grid-template-columns: 1fr;
+    margin-bottom: 0;
+  }
+}
+
+/*# sourceMappingURL=WeatherFacts.module.css.map */

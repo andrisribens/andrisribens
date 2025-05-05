@@ -1,34 +1,7 @@
 'use server';
 
-// Get Cat Facts
-
-interface CatFact {
-    length: number;
-    fact: string;
-  }
-
-export async function getCatFact(): Promise<CatFact> {
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_CATS_API_URL}`, {
-        cache: 'no-store', // Ensures data is always fetched fresh from the server
-      });
-  
-      if (!res.ok) {
-        throw new Error('Failed to fetch cat fact'); // Adjusted the error message to be more specific
-      }
-  
-      // Return the parsed JSON directly, ensure it matches the CatFact interface
-      const catFact: CatFact = await res.json();
-      return catFact; // Returning the CatFact object
-    } catch (error) {
-      console.error('Error fetching cat fact:', error);
-      throw error; // It's better to rethrow the error so the caller can handle it appropriately
-    }
-  };
-
 
 // Get Weather data
-
 interface WeatherDetails {
   air_pressure_at_sea_level?: number;
   air_temperature?: number;
@@ -154,4 +127,7 @@ export async function getPlaceFree(placeQuery: string): Promise<Place[]> {
     throw error;
   }
 }
+
+
+
 

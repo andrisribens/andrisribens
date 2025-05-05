@@ -1,0 +1,72 @@
+.nextCard {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(99, 190, 255);
+  border-radius: 20px;
+  gap: 1.5rem;
+}
+@media (max-width: 600px) {
+  .nextCard {
+    gap: 0;
+    padding: 1rem 2rem;
+  }
+}
+.nextCard__title {
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 0;
+  align-self: flex-end;
+}
+@media (max-width: 900px) {
+  .nextCard__title {
+    font-size: 1.6rem;
+    margin-bottom: -1rem;
+  }
+}
+@media (max-width: 900px) {
+  .nextCard__image {
+    width: 8rem;
+    height: 8rem;
+  }
+}
+.nextCard__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nextCard__precipitationvalue {
+  font-size: 6rem;
+  font-weight: 600;
+  display: inline-block;
+  color: white;
+  margin: 0;
+}
+@media (max-width: 900px) {
+  .nextCard__precipitationvalue {
+    font-size: 4rem;
+  }
+}
+.nextCard__precipitationvaluelabel {
+  color: white;
+  font-size: 3.2rem;
+  margin: 0 0 0 0.3rem;
+  display: inline-block;
+}
+@media (max-width: 900px) {
+  .nextCard__precipitationvaluelabel {
+    font-size: 2rem;
+  }
+}
+.nextCard__precipitationlabel {
+  color: white;
+  font-size: 1.2rem;
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .nextCard__precipitationlabel {
+    margin-top: -1rem;
+  }
+}
+
+/*# sourceMappingURL=NextCard.module.css.map */

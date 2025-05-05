@@ -1,0 +1,99 @@
+// Mixin for font styles
+@mixin font-style($family, $size, $weight: normal, $color: inherit) {
+    font-family: $family, sans-serif;
+    font-size: $size;
+    font-weight: $weight;
+    color: $color;
+}
+
+
+// Mixin for responsive breakpoints
+@mixin resp-max($breakpoint) {
+    @if $breakpoint =="xs" {
+        @media (max-width: 400px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="s" {
+        @media (max-width: 600px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="m" {
+        @media (max-width: 900px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="l" {
+        @media (max-width: 1200px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="xl" {
+        @media (max-width: 1400px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="xxl" {
+        @media (max-width: 1700px) {
+            @content;
+        }
+    }
+
+    @else {
+        @media (max-width: #{$breakpoint}px) {
+            @content;
+        }
+    }
+}
+
+@mixin resp-min($breakpoint) {
+    @if $breakpoint =="xs" {
+        @media (min-width: 401px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="s" {
+        @media (min-width: 601px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="m" {
+        @media (min-width: 901px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="l" {
+        @media (min-width: 1201px) {
+            @content;
+        }
+    }
+
+    @else if $breakpoint =="xl" {
+        @media (min-width: 1401px) {
+            @content;
+        }
+    }
+
+    @else {
+        @media (min-width: #{$breakpoint}px) {
+            @content;
+        }
+    }
+}
+
+// Mixin for flexbox
+@mixin flex-center($direction: row) {
+    display: flex;
+    flex-direction: $direction;
+    align-items: center;
+    justify-content: center;
+}

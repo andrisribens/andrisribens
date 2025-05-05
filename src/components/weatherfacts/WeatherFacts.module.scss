@@ -1,0 +1,152 @@
+@use '../../styles/variables.scss' as var;
+@use "../../styles/mixins" as *;
+
+.weather {
+    overflow-x: hidden;
+    max-width: 100vw;
+
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        position: relative;
+    }
+
+    &__city {
+
+        font-size: 7rem;
+        color: var.$orange;
+        font-weight: 900;
+
+        @include resp-max(1800) {
+            top: 3rem;
+            font-size: 4.5rem;
+        }
+
+        @include resp-max("m") {
+            top: 5rem;
+            font-size: 3.6rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 2.4rem;
+        }
+
+        &.cold {
+            color: var.$blue;
+        }
+
+        h2 {
+            margin: 0;
+        }
+
+
+    }
+
+    &__desc {
+        font-weight: 400;
+        font-size: 1.8rem;
+        margin: 0;
+
+        @include resp-min("xl") {
+            max-width: calc(100% - 33rem);
+        }
+
+        @include resp-max("m") {
+            font-size: 1.6rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 1.2rem;
+        }
+    }
+
+    &__searchItemsList {
+        margin-top: 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    &__currentlist {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4rem;
+        width: 100%;
+        margin-bottom: 6rem;
+
+        @include resp-max("l") {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include resp-max("m") {
+            gap: 2rem;
+        }
+
+        @include resp-max("s") {
+            gap: 2rem;
+        }
+
+        @include resp-max("xs") {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__currentlistitem {
+        aspect-ratio: 3/2;
+        position: relative;
+
+        @include resp-max("m") {
+            aspect-ratio: unset;
+            min-height: 10rem;
+        }
+    }
+
+    &__image {
+        object-fit: contain;
+        inset: 0;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+    }
+
+    &__nexttitle {
+        font-size: 4rem;
+        font-weight: 600;
+        margin-bottom: 3rem;
+
+        @include resp-max("m") {
+            font-size: 3.2rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 2.4rem;
+        }
+    }
+
+    &__nextlist {
+        margin: 2rem 0 4rem;
+        display: grid;
+        align-self: flex-start;
+        grid-template-columns: repeat(3, 44rem);
+        gap: 3rem;
+
+        @include resp-max(1500) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @include resp-max("l") {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include resp-max("m") {
+            gap: 2rem;
+        }
+
+        @include resp-max("s") {
+            grid-template-columns: 1fr;
+            margin-bottom: 0;
+        }
+    }
+
+}

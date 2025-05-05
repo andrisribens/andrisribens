@@ -1,0 +1,34 @@
+.weatherTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.weatherTop__inner {
+  display: flex;
+  justify-content: flex-end;
+}
+.weatherTop__inner img {
+  height: 30rem;
+  width: 30rem;
+}
+@media (max-width: 1400px) {
+  .weatherTop__inner {
+    justify-content: center;
+    height: 12rem;
+  }
+  .weatherTop__inner img {
+    height: 12rem;
+    width: auto;
+  }
+}
+@media (max-width: 900px) {
+  .weatherTop__inner {
+    height: 9rem;
+  }
+  .weatherTop__inner img {
+    height: 9rem;
+  }
+}
+
+/*# sourceMappingURL=WeatherTop.module.css.map */

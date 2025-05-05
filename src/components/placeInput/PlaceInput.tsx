@@ -1,9 +1,12 @@
 'use client';
 
 import { getPlaceStructured } from '@/app/utilities/actions';
+import { useDebounce } from '@/app/utilities//useDebounce';
 import styles from './PlaceInput.module.scss';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Loader from '@/app/weather/loading';
+import Image from 'next/image';
 
 interface PlaceInfo {
   display_name: string;
@@ -17,6 +20,8 @@ const PlaceInput = () => {
   ]);
   const [placeName, setPlaceName] = useState('');
   const [placeIsChosen, setPlaceIsChosen] = useState(false);
+  const debouncedInput = useDebounce(inputValue, 300); // 300ms debounce delay
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -26,44 +31,42 @@ const PlaceInput = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-    let charNo = event.target.value.length;
-
-    if (charNo >= 4) {
-      setPlaceIsChosen(false);
-      searchPlace(event.target.value);
-    }
   };
 
-  const searchPlace = async (searchPar: string) => {
-    if (inputValue !== '') {
-      const places = await getPlaceStructured(searchPar);
-      setPlaceValues(places);
-      console.log('these are placeValues: ', placeValues);
-    }
-  };
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      if (debouncedInput.length >= 4) {
+        setPlaceIsChosen(false);
+        setIsLoading(true);
+        const places = await getPlaceStructured(debouncedInput);
+        setPlaceValues(places);
+        setIsLoading(false);
+      }
+    };
+
+    fetchPlaces();
+  }, [debouncedInput]);
 
   const submitPlace = (name: string) => {
     setPlaceName(name);
     setPlaceIsChosen(true);
-    console.log(name);
-
     updateParams(name);
+    setInputValue('');
   };
 
   const createPlace = (placeInfo: PlaceInfo, idx: number) => {
     const name = placeInfo.display_name;
     return (
-      <div
+      <button
         key={idx}
         className={styles.placeCard}
         onClick={() => {
           submitPlace(name);
-          console.log(placeInfo);
         }}
       >
         <h3>{placeInfo.display_name}</h3>
         <p>{placeInfo.addresstype}</p>
-      </div>
+      </button>
     );
   };
 
@@ -76,32 +79,43 @@ const PlaceInput = () => {
           </div>
         }
       >
-        <div className={styles.placeInput}>
-          <input
-            type="text"
-            value={inputValue}
-            onChange={handleChange}
-            placeholder="Search your place"
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                searchPlace(inputValue);
-              }
-            }}
-          />
-          <button
-            className={styles.placeInput__btn}
-            onClick={() => searchPlace(inputValue)}
-          >
-            Submit
-          </button>
-        </div>
-        {(placeValues.length &&
-          placeValues[0].display_name !== '' &&
-          !placeIsChosen &&
-          placeValues.map(createPlace)) ||
-          null}
+        <div className="container">
+          <div className={styles.placeInput}>
+            <div className={styles.placeInput__input}>
+              <input
+                type="text"
+                value={inputValue}
+                onChange={handleChange}
+                placeholder="Search your place"
+              />
 
-        <h2 suppressHydrationWarning>Temperature for: {placeName}</h2>
+              <Image
+                src="/img/search.svg"
+                alt="search"
+                width={30}
+                height={30}
+                className={styles.placeInput__icon}
+              />
+            </div>
+
+            {isLoading && (
+              <div className={styles.loaderwrap}>
+                <Loader />
+              </div>
+            )}
+
+            {(!isLoading &&
+              placeValues.length &&
+              placeValues[0].display_name !== '' &&
+              !placeIsChosen && (
+                <div className={styles.places}>
+                  {' '}
+                  {placeValues.map(createPlace)}
+                </div>
+              )) ||
+              null}
+          </div>
+        </div>
       </Suspense>
     </>
   );

@@ -1,0 +1,128 @@
+@use '../../styles/variables.scss' as var;
+@use '../../styles/mixins' as *;
+
+
+.chart {
+    margin: 3rem 0 0;
+    width: 100%;
+
+    &:last-of-type {
+        margin-bottom: 10rem;
+    }
+
+
+    &__outerWrapper {
+        @include resp-max("s") {
+            overflow-x: auto;
+            margin: 0 -2rem;
+        }
+    }
+
+    &__innerWrapper {
+        @include resp-max("s") {
+            width: 200vw;
+        }
+    }
+
+    &__title {
+        font-size: 4rem;
+        line-height: 1.3;
+        font-weight: 600;
+        margin-bottom: 3rem;
+
+        @include resp-max("m") {
+            font-size: 3.2rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 2.4rem;
+        }
+    }
+}
+
+.chartbuttons {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 3rem;
+    margin-bottom: 6rem;
+
+
+
+    @include resp-max("xxl") {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 2rem;
+    }
+
+    @include resp-max("s") {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    &__btn {
+        padding: 2rem 0.5rem 1rem;
+        width: 25rem;
+        background-color: var.$white;
+        border: 1px solid transparent;
+        border-color: transparent;
+        border-bottom: 0.5rem solid var.$gray-lightest;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.5rem;
+
+        font-size: 2.4rem;
+        cursor: pointer;
+        transition: all .3s;
+
+        @include resp-max("xxl") {
+            width: unset;
+            font-size: 2rem;
+        }
+
+        @include resp-max("l") {
+            font-size: 1.8rem;
+        }
+
+        @include resp-max("m") {
+            font-size: 1.6rem;
+            padding: 1rem 0.3rem 0.5rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 1.3rem;
+            padding: 0.3rem 0.1rem;
+            border-bottom-width: 0.3rem;
+        }
+
+        span {
+            font-size: 1.8rem;
+            font-weight: 400;
+            color: var.$gray;
+
+            @include resp-max("xxl") {
+                font-size: 1.6rem;
+            }
+
+            @include resp-max("m") {
+                font-size: 1.4rem;
+            }
+
+            @include resp-max("s") {
+                font-size: 1.2rem;
+            }
+        }
+
+        &:hover,
+        &.active {
+            border-bottom: 0.5rem solid var.$orange;
+
+            @include resp-max("s") {
+                border-bottom-width: 0.3rem;
+            }
+
+        }
+    }
+}

@@ -1,10 +1,15 @@
 .header {
-  background-color: black;
-  color: white;
+  background-color: grey;
+  color: black;
   height: 100px;
   top: 0;
   left: 0;
   right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header__inner {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,7 +23,15 @@
 }
 .mainNav__item {
   text-decoration: none;
-  color: yellow;
+  color: black;
+  font-size: 1.6rem;
+}
+
+.darkMode .header {
+  background-color: black;
+}
+.darkMode .mainNav__item {
+  color: white;
 }
 
 /*# sourceMappingURL=Header.module.css.map */

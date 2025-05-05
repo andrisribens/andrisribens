@@ -1,0 +1,52 @@
+@use '../../styles/variables.scss' as var;
+@use "../../styles/mixins" as *;
+
+
+.searchedPlaces {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+
+}
+
+.onePlace {
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background-color: rgba(var.$orange, 0.4);
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
+    transition: all .3s;
+
+    &:hover,
+    &:focus-within {
+        background-color: var.$orange;
+    }
+
+    &__name {
+        margin: 0;
+        font-size: 1.6rem;
+        line-height: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        cursor: pointer;
+
+        @include resp-max("s") {
+            font-size: 1.4rem;
+        }
+    }
+
+    &__close {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        &:hover {
+            img {
+                filter: invert(1);
+            }
+        }
+    }
+}
