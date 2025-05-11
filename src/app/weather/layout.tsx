@@ -31,12 +31,5 @@ export default function WeatherLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body>
-        <main>{children}</main>
-        <Footer />
-      </body>
-    </html>
-  );
+  return <>{children}</>;
 }
