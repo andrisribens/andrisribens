@@ -97,8 +97,15 @@ h6 {
         }
 
         &:hover {
-            box-shadow: 6px 6px 16px 6px rgba(black, 0.3);
-            transform: translate(-0.5rem, -1rem);
+            @include resp-min("m") {
+                box-shadow: 6px 6px 16px 6px rgba(black, 0.3);
+                transform: translate(-0.5rem, -1rem);
+            }
+
+            @include resp-max("s") {
+                box-shadow: 0 0 8px 0 var.$orange;
+
+            }
         }
 
         img {
