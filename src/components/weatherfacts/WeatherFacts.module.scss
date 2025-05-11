@@ -10,10 +10,13 @@
         flex-direction: column;
         gap: 30px;
         position: relative;
+
+        @include resp-max("s") {
+            gap: 2rem;
+        }
     }
 
     &__city {
-
         font-size: 7rem;
         color: var.$orange;
         font-weight: 900;
@@ -66,6 +69,10 @@
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
+
+        @include resp-max("s") {
+            margin-top: 1rem;
+        }
     }
 
     &__currentlist {
@@ -84,11 +91,7 @@
         }
 
         @include resp-max("s") {
-            gap: 2rem;
-        }
-
-        @include resp-max("xs") {
-            grid-template-columns: 1fr;
+            column-gap: 1rem;
         }
     }
 
@@ -144,8 +147,9 @@
         }
 
         @include resp-max("s") {
-            grid-template-columns: 1fr;
+            // grid-template-columns: 1fr;
             margin-bottom: 0;
+            column-gap: 1rem;
         }
     }
 

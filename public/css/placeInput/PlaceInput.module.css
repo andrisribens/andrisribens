@@ -17,6 +17,11 @@
     margin-top: 10rem;
   }
 }
+@media (max-width: 600px) {
+  .placeInput {
+    margin-bottom: 2rem;
+  }
+}
 .placeInput__input {
   position: relative;
 }

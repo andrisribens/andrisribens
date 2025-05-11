@@ -8,6 +8,11 @@
   gap: 30px;
   position: relative;
 }
+@media (max-width: 600px) {
+  .weather__inner {
+    gap: 2rem;
+  }
+}
 .weather__city {
   font-size: 7rem;
   color: orange;
@@ -62,6 +67,11 @@
   flex-wrap: wrap;
   gap: 1rem;
 }
+@media (max-width: 600px) {
+  .weather__searchItemsList {
+    margin-top: 1rem;
+  }
+}
 .weather__currentlist {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -81,12 +91,7 @@
 }
 @media (max-width: 600px) {
   .weather__currentlist {
-    gap: 2rem;
-  }
-}
-@media (max-width: 400px) {
-  .weather__currentlist {
-    grid-template-columns: 1fr;
+    column-gap: 1rem;
   }
 }
 .weather__currentlistitem {
@@ -145,8 +150,8 @@
 }
 @media (max-width: 600px) {
   .weather__nextlist {
-    grid-template-columns: 1fr;
     margin-bottom: 0;
+    column-gap: 1rem;
   }
 }
 

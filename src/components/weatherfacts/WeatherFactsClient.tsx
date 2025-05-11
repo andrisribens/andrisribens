@@ -438,26 +438,6 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
                   </div>
                 )}
 
-                {air_pressure_at_sea_level !== null && (
-                  <div className={styles.weather__currentlistitem}>
-                    <WeatherCard
-                      value={air_pressure_at_sea_level}
-                      units={units.air_pressure_at_sea_level}
-                      label="Air Pressure"
-                    />
-                  </div>
-                )}
-
-                {relative_humidity !== null && (
-                  <div className={styles.weather__currentlistitem}>
-                    <WeatherCard
-                      value={relative_humidity}
-                      units={units.relative_humidity}
-                      label="Relative Humidity"
-                    />
-                  </div>
-                )}
-
                 {wind_speed !== null && wind_from_direction !== null && (
                   <div className={styles.weather__currentlistitem}>
                     <WeatherCard
@@ -479,6 +459,26 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
                       value={cloud_area_fraction}
                       units={units.cloud_area_fraction}
                       label="Cloud Area Fraction"
+                    />
+                  </div>
+                )}
+
+                {air_pressure_at_sea_level !== null && (
+                  <div className={styles.weather__currentlistitem}>
+                    <WeatherCard
+                      value={air_pressure_at_sea_level}
+                      units={units.air_pressure_at_sea_level}
+                      label="Air Pressure"
+                    />
+                  </div>
+                )}
+
+                {relative_humidity !== null && (
+                  <div className={styles.weather__currentlistitem}>
+                    <WeatherCard
+                      value={relative_humidity}
+                      units={units.relative_humidity}
+                      label="Relative Humidity"
                     />
                   </div>
                 )}

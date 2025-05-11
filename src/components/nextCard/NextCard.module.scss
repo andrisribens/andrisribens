@@ -9,10 +9,13 @@
     background-color: var.$blue;
     border-radius: 20px;
     gap: 1.5rem;
+    box-shadow: 0 0 8px 0 rgba(black, 0.3);
+    min-height: 10rem;
+
 
     @include resp-max("s") {
-        gap: 0;
-        padding: 1rem 2rem;
+        gap: 1rem;
+        padding: 1rem;
     }
 
 
@@ -26,6 +29,10 @@
             font-size: 1.6rem;
             margin-bottom: -1rem;
         }
+
+        @include resp-max ("s") {
+            font-size: 1.2rem;
+        }
     }
 
     &__image {
@@ -33,6 +40,11 @@
         @include resp-max ("m") {
             width: 8rem;
             height: 8rem;
+        }
+
+        @include resp-max ("s") {
+            width: 6rem;
+            height: 6rem;
         }
     }
 
@@ -52,6 +64,10 @@
         @include resp-max ("m") {
             font-size: 4rem;
         }
+
+        @include resp-max ("xs") {
+            font-size: 3.6rem;
+        }
     }
 
     &__precipitationvaluelabel {
@@ -64,6 +80,10 @@
             font-size: 2rem;
         }
 
+        @include resp-max ("s") {
+            font-size: 1.4rem;
+        }
+
     }
 
     &__precipitationlabel {
@@ -72,7 +92,7 @@
         margin: 0;
 
         @include resp-max("s") {
-            margin-top: -1rem;
+            // margin-top: -1rem;
         }
     }
 }

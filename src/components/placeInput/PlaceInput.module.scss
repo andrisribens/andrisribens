@@ -20,6 +20,10 @@
         margin-top: 10rem;
     }
 
+    @include resp-max("s") {
+        margin-bottom: 2rem;
+    }
+
     &__input {
         position: relative;
 

@@ -21,6 +21,11 @@
     padding: 1.5rem;
   }
 }
+@media (max-width: 400px) {
+  .weatherCard {
+    padding: 1rem;
+  }
+}
 .weatherCard__value {
   font-size: 8.6rem;
   font-weight: 700;
@@ -34,6 +39,11 @@
 @media (max-width: 600px) {
   .weatherCard__value {
     font-size: 4rem;
+  }
+}
+@media (max-width: 400px) {
+  .weatherCard__value {
+    font-size: 3.6rem;
   }
 }
 @media (min-width: 1800px) {
@@ -56,6 +66,11 @@
     font-size: 1.4rem;
   }
 }
+@media (max-width: 400px) {
+  .weatherCard__unit {
+    font-size: 1.2rem;
+  }
+}
 .weatherCard__label {
   font-size: 2.4rem;
   display: block;
@@ -71,6 +86,11 @@
   .weatherCard__label {
     font-size: 1.4rem;
     margin-top: 0;
+  }
+}
+@media (max-width: 400px) {
+  .weatherCard__label {
+    font-size: 1.2rem;
   }
 }
 @media (max-width: 600px) {

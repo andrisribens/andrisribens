@@ -14,7 +14,7 @@ const SearchedPlaces = ({ place }: { place: any }) => {
     if (place) {
       setSearchedPlaces((prev) => {
         if (!prev.some((p) => p.osm_id === place.osm_id)) {
-          return [...prev, place];
+          return [place, ...prev];
         }
         return prev;
       });

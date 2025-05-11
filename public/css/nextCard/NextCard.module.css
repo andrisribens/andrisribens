@@ -5,11 +5,13 @@
   background-color: rgb(99, 190, 255);
   border-radius: 20px;
   gap: 1.5rem;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
+  min-height: 10rem;
 }
 @media (max-width: 600px) {
   .nextCard {
-    gap: 0;
-    padding: 1rem 2rem;
+    gap: 1rem;
+    padding: 1rem;
   }
 }
 .nextCard__title {
@@ -24,10 +26,21 @@
     margin-bottom: -1rem;
   }
 }
+@media (max-width: 600px) {
+  .nextCard__title {
+    font-size: 1.2rem;
+  }
+}
 @media (max-width: 900px) {
   .nextCard__image {
     width: 8rem;
     height: 8rem;
+  }
+}
+@media (max-width: 600px) {
+  .nextCard__image {
+    width: 6rem;
+    height: 6rem;
   }
 }
 .nextCard__main {
@@ -47,6 +60,11 @@
     font-size: 4rem;
   }
 }
+@media (max-width: 400px) {
+  .nextCard__precipitationvalue {
+    font-size: 3.6rem;
+  }
+}
 .nextCard__precipitationvaluelabel {
   color: white;
   font-size: 3.2rem;
@@ -58,15 +76,15 @@
     font-size: 2rem;
   }
 }
+@media (max-width: 600px) {
+  .nextCard__precipitationvaluelabel {
+    font-size: 1.4rem;
+  }
+}
 .nextCard__precipitationlabel {
   color: white;
   font-size: 1.2rem;
   margin: 0;
-}
-@media (max-width: 600px) {
-  .nextCard__precipitationlabel {
-    margin-top: -1rem;
-  }
 }
 
 /*# sourceMappingURL=NextCard.module.css.map */
