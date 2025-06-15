@@ -72,6 +72,29 @@ const ChartComponent = ({
 
   if (!activeChart) return null; // Prevent errors when `activeChart` is undefined
 
+  // Collect all values
+  const allValues = activeChart.data.datasets
+    .flatMap((d) => d.data)
+    .filter((val): val is number => typeof val === 'number');
+
+  const rawMin = Math.min(...allValues);
+  const rawMax = Math.max(...allValues);
+
+  // Round only min and max to cleaner values
+  const buffer = (rawMax - rawMin) * 0.1;
+  const calculatedMin = Math.floor((rawMin - buffer) / 5) * 5;
+  const calculatedMax = Math.ceil((rawMax + buffer) / 5) * 5;
+
+  // Use manually defined values if present, otherwise use calculated ones
+  const manualMin = activeChart.options?.scales?.y?.min;
+  const manualMax = activeChart.options?.scales?.y?.max;
+
+  const finalMin = typeof manualMin === 'number' ? manualMin : calculatedMin;
+  const finalMax = typeof manualMax === 'number' ? manualMax : calculatedMax;
+
+  const isTemperature = activeChart.id === 'temperature';
+  const stepSize = isTemperature ? 2 : undefined;
+
   const mergedOptions = {
     ...activeChart.options,
     responsive: true,
@@ -84,15 +107,38 @@ const ChartComponent = ({
     },
     scales: {
       y: {
+        min: finalMin,
+        max: finalMax,
+        ticks: {
+          stepSize: stepSize,
+          callback: (value) => Number(value).toFixed(0),
+        },
+        grid: {
+          drawOnChartArea: false,
+        },
         title: {
           display: true,
           align: 'end',
           text: activeChart.yAxisLabel,
         },
-        grid: {
-          lineWidth: 0,
+      },
+      yRight: {
+        type: 'linear',
+        position: 'right',
+        min: finalMin,
+        max: finalMax,
+        ticks: {
+          stepSize: stepSize,
+          callback: (value) => Number(value).toFixed(0),
         },
-        min: activeChart.options?.scales.y.min,
+        grid: {
+          drawOnChartArea: false,
+        },
+        title: {
+          display: true,
+          align: 'end',
+          text: activeChart.yAxisLabel,
+        },
       },
     },
   };

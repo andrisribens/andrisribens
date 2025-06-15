@@ -228,6 +228,14 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
           },
         ],
       },
+      options: {
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+          },
+        },
+      },
     },
     {
       type: 'bar',
@@ -270,6 +278,14 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
             tension: 0.4,
           },
         ],
+      },
+      options: {
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+          },
+        },
       },
     },
   ];
@@ -337,6 +353,14 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
           },
         ],
       },
+      options: {
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+          },
+        },
+      },
     },
     {
       type: 'bar',
@@ -379,6 +403,14 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
             tension: 0.4,
           },
         ],
+      },
+      options: {
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+          },
+        },
       },
     },
   ];

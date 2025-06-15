@@ -7,7 +7,8 @@ import Footer from '../components/footer/Footer';
 export const metadata: Metadata = {
   title: 'Andris Rībens website',
   description:
-    'This is Andris Rībens personal website, where I showcase some of my personal projets.',
+    'This is Andris Rībens personal website, where I showcase some of my personal projects.',
+  // icons: { icon: '/favicon.ico', apple: '/apple-touch-icon.png' },
 };
 
 export default function RootLayout({

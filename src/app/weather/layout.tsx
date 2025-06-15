@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import '../../styles/globals.scss';
-import Footer from '../../components/footer/Footer';
 
 export const metadata: Metadata = {
   title: 'Weather Now - Local Forecasts',

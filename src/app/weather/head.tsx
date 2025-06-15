@@ -6,6 +6,7 @@ export default function Head() {
         name="description"
         content="Live weather updates and forecasts by location."
       />
+      <link rel="manifest" href="/img/weather/site.webmanifest" />
 
       {/* Custom Favicon */}
       <link rel="icon" href="/img/weather/favicon.ico" sizes="any" />
@@ -13,7 +14,7 @@ export default function Head() {
       <meta name="theme-color" content="#00aaff" />
 
       {/* Open Graph / Social */}
-      <meta property="og:title" content="Weather Now – Local Forecasts" />
+      <meta property="og:title" content="Weather Now - Local Forecasts" />
       <meta
         property="og:description"
         content="Live weather updates and forecasts by location."
