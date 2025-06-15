@@ -74,8 +74,11 @@ const ChartComponent = ({
 
   // Collect all values
   const allValues = activeChart.data.datasets
-    .flatMap((d) => d.data)
-    .filter((val): val is number => typeof val === 'number');
+    .map((d: ChartDataset) => d.data)
+    .flat()
+    .filter(
+      (val: number | undefined): val is number => typeof val === 'number'
+    );
 
   const rawMin = Math.min(...allValues);
   const rawMax = Math.max(...allValues);
@@ -111,7 +114,7 @@ const ChartComponent = ({
         max: finalMax,
         ticks: {
           stepSize: stepSize,
-          callback: (value) => Number(value).toFixed(0),
+          callback: (value: number | undefined) => Number(value).toFixed(0),
         },
         grid: {
           drawOnChartArea: false,
@@ -129,7 +132,7 @@ const ChartComponent = ({
         max: finalMax,
         ticks: {
           stepSize: stepSize,
-          callback: (value) => Number(value).toFixed(0),
+          callback: (value: number | undefined) => Number(value).toFixed(0),
         },
         grid: {
           drawOnChartArea: false,
