@@ -76,6 +76,7 @@
         font-size: 2.4rem;
         cursor: pointer;
         transition: all .3s;
+        position: relative;
 
         @include resp-max("xxl") {
             width: unset;
@@ -115,7 +116,27 @@
             }
         }
 
-        &:hover,
+        &::after {
+            content: "";
+            position: absolute;
+            display: block;
+            height: 0.5rem;
+            background-color: var.$orange;
+            width: 0;
+            bottom: -0.5rem;
+            left: 0;
+            z-index: 1;
+            transition: all .5s ease-in-out;
+
+            @include resp-max("s") {
+                height: 0.3rem;
+            }
+        }
+
+        &:hover::after {
+            width: 100%;
+        }
+
         &.active {
             border-bottom: 0.5rem solid var.$orange;
 

@@ -68,6 +68,7 @@
   font-size: 2.4rem;
   cursor: pointer;
   transition: all 0.3s;
+  position: relative;
 }
 @media (max-width: 1700px) {
   .chartbuttons__btn {
@@ -113,11 +114,26 @@
     font-size: 1.2rem;
   }
 }
-.chartbuttons__btn:hover, .chartbuttons__btn.active {
+.chartbuttons__btn::after {
+  content: "";
+  position: absolute;
+  display: block;
+  height: 0.5rem;
+  background-color: orange;
+  width: 0;
+  bottom: -0.5rem;
+  left: 0;
+  z-index: 1;
+  transition: all 0.5s ease-in-out;
+}
+.chartbuttons__btn:hover::after {
+  width: 100%;
+}
+.chartbuttons__btn.active {
   border-bottom: 0.5rem solid orange;
 }
 @media (max-width: 600px) {
-  .chartbuttons__btn:hover, .chartbuttons__btn.active {
+  .chartbuttons__btn.active {
     border-bottom-width: 0.3rem;
   }
 }
