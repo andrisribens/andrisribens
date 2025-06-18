@@ -130,6 +130,7 @@
 
             @include resp-max("s") {
                 height: 0.3rem;
+                bottom: -0.3rem;
             }
         }
 
@@ -138,10 +139,12 @@
         }
 
         &.active {
-            border-bottom: 0.5rem solid var.$orange;
-
             @include resp-max("s") {
                 border-bottom-width: 0.3rem;
+            }
+
+            &::after {
+                width: 100%;
             }
 
         }

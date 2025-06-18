@@ -126,16 +126,22 @@
   z-index: 1;
   transition: all 0.5s ease-in-out;
 }
+@media (max-width: 600px) {
+  .chartbuttons__btn::after {
+    height: 0.3rem;
+    bottom: -0.3rem;
+  }
+}
 .chartbuttons__btn:hover::after {
   width: 100%;
-}
-.chartbuttons__btn.active {
-  border-bottom: 0.5rem solid orange;
 }
 @media (max-width: 600px) {
   .chartbuttons__btn.active {
     border-bottom-width: 0.3rem;
   }
+}
+.chartbuttons__btn.active::after {
+  width: 100%;
 }
 
 /*# sourceMappingURL=ChartComponent.module.css.map */

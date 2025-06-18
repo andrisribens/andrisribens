@@ -38,8 +38,10 @@
   background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, white 25%);
   display: block;
 }
-.footer__links a:hover::after {
-  animation: line 1s ease-in-out;
+@media (min-width: 901px) {
+  .footer__links a:hover::after {
+    animation: line 1s ease-in-out;
+  }
 }
 
 @keyframes line {

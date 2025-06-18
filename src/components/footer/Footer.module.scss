@@ -41,7 +41,9 @@
             }
 
             &:hover::after {
-                animation: line 1s ease-in-out;
+                @include resp-min("m") {
+                    animation: line 1s ease-in-out;
+                }
             }
         }
     }

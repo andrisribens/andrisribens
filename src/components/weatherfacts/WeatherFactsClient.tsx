@@ -38,6 +38,8 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
   const in1h = currentData.next_1_hours;
   const instantData = currentData.instant.details;
 
+  console.log('Timeseries: ', timeseries);
+
   const {
     air_temperature,
     air_pressure_at_sea_level,
@@ -114,10 +116,23 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
     (timestamp) => timestamp.data.instant.details.wind_speed
   );
 
+  const allWindDirections = timeseries.map(
+    (timestamp) => timestamp.data.instant.details.wind_from_direction
+  );
+
   const first24Windspeeds = allWindspeeds.filter((time, index) => index < 25);
   const next24Windspeeds = allWindspeeds.filter(
     (time, index) => index >= 25 && index < 57
   );
+
+  const first24WindDirections = allWindDirections.filter(
+    (time, index) => index < 25
+  );
+
+  const next24WindDirections = allWindDirections.filter(
+    (time, index) => index >= 25 && index < 57
+  );
+
   const allPrecipitation = timeseries.map(
     (timestamp) => timestamp.data.instant.details
   );
@@ -203,8 +218,14 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
             borderColor: blackColor,
             borderWidth: 5,
             tension: 0.4,
+            windDirections: first24WindDirections,
           },
         ],
+      },
+      options: {
+        plugins: {
+          chartId: 'wind',
+        },
       },
     },
     {
@@ -329,6 +350,7 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
             borderColor: blackColor,
             borderWidth: 5,
             tension: 0.4,
+            windDirections: next24WindDirections,
           },
         ],
       },
