@@ -4,7 +4,7 @@
   background-color: white;
   box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.3);
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   align-items: center;
   justify-content: center;
   border-bottom: 0.3rem solid orange;
@@ -19,6 +19,7 @@
 @media (max-width: 600px) {
   .weatherCard {
     padding: 1.5rem;
+    gap: 1rem;
   }
 }
 @media (max-width: 400px) {
@@ -97,6 +98,27 @@
   .weatherCard img {
     width: 4rem;
     height: 4rem;
+  }
+}
+.weatherCard__windDirectionLabel {
+  text-align: center;
+  margin: 0;
+  font-size: 2rem;
+  color: grey;
+}
+@media (max-width: 900px) {
+  .weatherCard__windDirectionLabel {
+    font-size: 1.6rem;
+  }
+}
+@media (max-width: 600px) {
+  .weatherCard__windDirectionLabel {
+    font-size: 1.4rem;
+  }
+}
+@media (max-width: 400px) {
+  .weatherCard__windDirectionLabel {
+    font-size: 1.2rem;
   }
 }
 

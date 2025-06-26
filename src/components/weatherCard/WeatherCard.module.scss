@@ -7,7 +7,7 @@
     background-color: white;
     box-shadow: 0 0 8px 0 rgba(black, 0.3);
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     align-items: center;
     justify-content: center;
     border-bottom: 0.3rem solid var.$orange;
@@ -20,6 +20,7 @@
 
     @include resp-max("s") {
         padding: 1.5rem;
+        gap: 1rem;
     }
 
     @include resp-max("xs") {
@@ -90,6 +91,25 @@
         @include resp-max("s") {
             width: 4rem;
             height: 4rem;
+        }
+    }
+
+    &__windDirectionLabel {
+        text-align: center;
+        margin: 0;
+        font-size: 2rem;
+        color: var.$gray;
+
+        @include resp-max("m") {
+            font-size: 1.6rem;
+        }
+
+        @include resp-max("s") {
+            font-size: 1.4rem;
+        }
+
+        @include resp-max("xs") {
+            font-size: 1.2rem;
         }
     }
 }

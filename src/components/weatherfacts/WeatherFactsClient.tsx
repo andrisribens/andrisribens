@@ -38,8 +38,6 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
   const in1h = currentData.next_1_hours;
   const instantData = currentData.instant.details;
 
-  console.log('Timeseries: ', timeseries);
-
   const {
     air_temperature,
     air_pressure_at_sea_level,
@@ -48,6 +46,13 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
     wind_from_direction,
     cloud_area_fraction,
   } = instantData;
+
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+
+  const getCompassLabel = (angle: number) =>
+    directions[Math.round(angle / 45) % 8];
+
+  const wind_from_direction_label = getCompassLabel(wind_from_direction);
 
   // Data for nextData cards
   const nextData = Object.entries(currentData)
@@ -223,6 +228,11 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
         ],
       },
       options: {
+        scales: {
+          y: {
+            min: 0,
+          },
+        },
         plugins: {
           chartId: 'wind',
         },
@@ -353,6 +363,13 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
             windDirections: next24WindDirections,
           },
         ],
+      },
+      options: {
+        scales: {
+          y: {
+            min: 0,
+          },
+        },
       },
     },
     {
@@ -503,6 +520,7 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
                         src: '/img/arrow-down.svg',
                         alt: 'Weather Direction Arrow',
                       }}
+                      windDirectionLabel={wind_from_direction_label}
                     />
                   </div>
                 )}
