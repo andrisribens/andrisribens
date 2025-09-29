@@ -28,7 +28,7 @@
   }
 }
 .weatherCard__value {
-  font-size: 8.6rem;
+  font-size: 8.5rem;
   font-weight: 700;
   display: inline;
 }
@@ -121,5 +121,3 @@
     font-size: 1.2rem;
   }
 }
-
-/*# sourceMappingURL=WeatherCard.module.css.map */

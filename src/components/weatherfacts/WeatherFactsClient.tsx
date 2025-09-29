@@ -565,7 +565,6 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
                     const symbolCode = value.summary?.symbol_code ?? 'n/a';
                     const precipitationAmount =
                       value.details?.precipitation_amount;
-                    // value.details?.precipitation_amount ?? 'n/a';
                     return (
                       <NextCard
                         key={key}

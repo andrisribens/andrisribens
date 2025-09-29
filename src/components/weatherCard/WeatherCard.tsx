@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './WeatherCard.module.scss';
-import { div } from 'motion/react-client';
 
 interface CardInfo {
   value?: number;
