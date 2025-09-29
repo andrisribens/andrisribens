@@ -2,6 +2,7 @@
 
 import { getPlaceStructured } from '@/app/utilities/actions';
 import { useDebounce } from '@/app/utilities//useDebounce';
+import { debounce } from '../../app/utilities/timing';
 import styles from './PlaceInput.module.scss';
 import React, { Suspense, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -34,17 +35,22 @@ const PlaceInput = () => {
   };
 
   useEffect(() => {
-    const fetchPlaces = async () => {
+    let alive = true;
+    let callId = Math.random();
+    (async () => {
       if (debouncedInput.length >= 4) {
         setPlaceIsChosen(false);
         setIsLoading(true);
+        const id = callId;
         const places = await getPlaceStructured(debouncedInput);
+        if (!alive || id !== callId) return;
         setPlaceValues(places);
         setIsLoading(false);
       }
+    })();
+    return () => {
+      alive = false;
     };
-
-    fetchPlaces();
   }, [debouncedInput]);
 
   const submitPlace = (name: string) => {
@@ -106,7 +112,7 @@ const PlaceInput = () => {
 
             {(!isLoading &&
               placeValues.length &&
-              placeValues[0].display_name !== '' &&
+              placeValues[0]?.display_name !== '' &&
               !placeIsChosen && (
                 <div className={styles.places}>
                   {' '}

@@ -1,16 +1,17 @@
 import React from 'react';
+import Link from 'next/link';
 import styles from './Footer.module.scss';
 
 const Footer: React.FC = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.footer__links}>
-        <a target="_blank" href="https://www.kingofthebeach.me">
+        <Link target="_blank" href="https://www.kingofthebeach.me">
           King of The Beach
-        </a>
-        <a href="/" rel="author">
+        </Link>
+        <Link href="/" rel="author">
           Made by Andris Rībens
-        </a>
+        </Link>
       </div>
     </footer>
   );
