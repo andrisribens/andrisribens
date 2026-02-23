@@ -88,6 +88,7 @@ const PlaceInput = () => {
           <div className={styles.placeInput}>
             <div className={styles.placeInput__input}>
               <input
+                name="input-place"
                 type="text"
                 value={inputValue}
                 onChange={handleChange}
