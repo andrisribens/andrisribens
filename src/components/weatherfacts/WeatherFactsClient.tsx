@@ -32,6 +32,7 @@ type TimeSeriesItem = {
 };
 
 const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
+  console.log('Weather from props: ', weather);
   const units = weather.properties.meta.units;
   const timeseries: TimeSeriesItem[] = weather.properties.timeseries;
   const currentData = timeseries[0].data;
@@ -57,15 +58,16 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
   // Data for nextData cards
   const nextData = Object.entries(currentData)
     .filter(
-      ([key]) => key !== 'instant' // Exclude `instant`
+      ([key]) => key !== 'instant', // Exclude `instant`
     )
     .sort(
-      ([a], [b]) => (a === 'next_12_hours' ? 1 : b === 'next_12_hours' ? -1 : 0) //Put object part with specific key "next_12_hours" at the end
+      ([a], [b]) =>
+        a === 'next_12_hours' ? 1 : b === 'next_12_hours' ? -1 : 0, //Put object part with specific key "next_12_hours" at the end
     );
 
   // These are arrays for table/graph
   const allTimes: string[] = timeseries.map(
-    (timestamp: { time: string }) => timestamp.time
+    (timestamp: { time: string }) => timestamp.time,
   );
 
   dayjs.extend(relativeTime);
@@ -98,82 +100,82 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
   const allRelativeTimes = allTimes.map(getSpecificRelativeTime);
 
   const first24RelativeTimes = allRelativeTimes.filter(
-    (time, index) => index < 25
+    (time, index) => index < 25,
   );
 
   const next24RelativeTimes = allRelativeTimes.filter(
-    (time, index) => index >= 25 && index < 57
+    (time, index) => index >= 25 && index < 57,
   );
 
   const allTemperatures = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.air_temperature
+    (timestamp) => timestamp.data.instant.details.air_temperature,
   );
 
   const first24Temperatures = allTemperatures.filter(
-    (time, index) => index < 25
+    (time, index) => index < 25,
   );
 
   const next24Temperatures = allTemperatures.filter(
-    (time, index) => index >= 25 && index < 57
+    (time, index) => index >= 25 && index < 57,
   );
 
   const allWindspeeds = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.wind_speed
+    (timestamp) => timestamp.data.instant.details.wind_speed,
   );
 
   const allWindDirections = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.wind_from_direction
+    (timestamp) => timestamp.data.instant.details.wind_from_direction,
   );
 
   const first24Windspeeds = allWindspeeds.filter((time, index) => index < 25);
   const next24Windspeeds = allWindspeeds.filter(
-    (time, index) => index >= 25 && index < 57
+    (time, index) => index >= 25 && index < 57,
   );
 
   const first24WindDirections = allWindDirections.filter(
-    (time, index) => index < 25
+    (time, index) => index < 25,
   );
 
   const next24WindDirections = allWindDirections.filter(
-    (time, index) => index >= 25 && index < 57
+    (time, index) => index >= 25 && index < 57,
   );
 
   const allPrecipitation = timeseries.map(
-    (timestamp) => timestamp.data.instant.details
+    (timestamp) => timestamp.data.instant.details,
   );
 
   const first24Precipitation = allPrecipitation.filter(
-    (time, index) => index < 25
+    (time, index) => index < 25,
   );
   const next24Precipitation = allPrecipitation.filter(
-    (time, index) => index >= 25 && index < 57
+    (time, index) => index >= 25 && index < 57,
   );
 
   const allPressure = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.air_pressure_at_sea_level
+    (timestamp) => timestamp.data.instant.details.air_pressure_at_sea_level,
   );
 
   const first24Pressure = allPressure.filter((time, index) => index < 25);
   const next24Pressure = allPressure.filter(
-    (time, index) => index >= 25 && index < 57
+    (time, index) => index >= 25 && index < 57,
   );
 
   const allHumidity = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.relative_humidity
+    (timestamp) => timestamp.data.instant.details.relative_humidity,
   );
 
   const first24Humidity = allHumidity.filter((time, index) => index < 25);
   const next24Humidity = allHumidity.filter(
-    (time, index) => index >= 25 && index < 57
+    (time, index) => index >= 25 && index < 57,
   );
 
   const allCloudArea = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.cloud_area_fraction
+    (timestamp) => timestamp.data.instant.details.cloud_area_fraction,
   );
 
   const first24CloudArea = allCloudArea.filter((time, index) => index < 25);
   const next24CloudArea = allCloudArea.filter(
-    (time, index) => index >= 25 && index < 57
+    (time, index) => index >= 25 && index < 57,
   );
 
   const weatherIconPath: string =
@@ -196,7 +198,7 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
             data: first24Temperatures,
             borderWidth: 2,
             backgroundColor: first24Temperatures.map((temp) =>
-              (temp ?? 0) > 0 ? orangeColor : blueColor
+              (temp ?? 0) > 0 ? orangeColor : blueColor,
             ),
             tension: 0.4,
             fill: { target: 'origin', above: orangeColor, below: blueColor },
@@ -334,7 +336,7 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
             data: next24Temperatures,
             borderWidth: 2,
             backgroundColor: next24Temperatures.map((temp) =>
-              (temp ?? 0) > 0 ? orangeColor : blueColor
+              (temp ?? 0) > 0 ? orangeColor : blueColor,
             ),
             tension: 0.4,
             fill: { target: 'origin', above: orangeColor, below: blueColor },

@@ -18,6 +18,7 @@ const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
   let places: any[] = [];
   try {
     places = await getPlaceFree(query);
+    console.log('Places: ', places);
   } catch (err) {
     console.error('Error fetching place data:', err);
     return <div>Couldn't load place data right now. Please try again.</div>;
@@ -40,6 +41,7 @@ const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
   let weather: any;
   try {
     weather = await getWeather(latNum, lonNum);
+    console.log('weather from api: ', weather);
   } catch (err) {
     console.error('Error fetching weather data:', err);
     return (

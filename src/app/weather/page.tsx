@@ -6,6 +6,8 @@ interface PageProps {
   searchParams: { place?: string };
 }
 
+export const runtime = 'nodejs';
+
 export default async function Weather({ searchParams }: PageProps) {
   const placeData = searchParams?.place ?? '';
 
