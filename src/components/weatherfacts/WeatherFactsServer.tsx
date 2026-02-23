@@ -4,19 +4,51 @@ import { getPlaceFree, getWeather } from '@/app/utilities/actions';
 import React from 'react';
 import WeatherFactsClient from './WeatherFactsClient';
 
-const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
-  if (!placeData) return null;
+function toTwoDecimalsNumber(value: string): number | null {
+  const n = Number.parseFloat(value);
+  if (!Number.isFinite(n)) return null;
+  return Number.parseFloat(n.toFixed(2));
+}
 
-  const places = await getPlaceFree(placeData);
-  if (!places.length) return <div>No place found</div>;
+const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
+  const query = (placeData ?? '').trim();
+  if (!query) return null;
+
+  // 1) Place lookup (guard against network errors / rate limits)
+  let places: any[] = [];
+  try {
+    places = await getPlaceFree(query);
+  } catch (err) {
+    console.error('Error fetching place data:', err);
+    return <div>Couldn't load place data right now. Please try again.</div>;
+  }
+
+  if (!Array.isArray(places) || places.length === 0) {
+    return <div>No place found</div>;
+  }
 
   const onePlace = places[0];
-  const { lat, lon, name } = onePlace;
-  // Transform coordinates to number and then to number with two decimals
-  const latNum = parseFloat(parseFloat(lat).toFixed(2));
-  const longNum = parseFloat(parseFloat(lon).toFixed(2));
+  const latNum = toTwoDecimalsNumber(onePlace?.lat);
+  const lonNum = toTwoDecimalsNumber(onePlace?.lon);
 
-  const weather = await getWeather(latNum, longNum);
+  if (latNum === null || lonNum === null) {
+    console.error('Invalid coordinates from place API:', onePlace);
+    return <div>Found a place, but its coordinates look invalid.</div>;
+  }
+
+  // 2) Weather lookup (separate error handling)
+  let weather: any;
+  try {
+    weather = await getWeather(latNum, lonNum);
+  } catch (err) {
+    console.error('Error fetching weather data:', err);
+    return (
+      <div>
+        Found <b>{onePlace?.name ?? 'the place'}</b>, but couldn't load weather
+        right now. Please try again.
+      </div>
+    );
+  }
 
   return <WeatherFactsClient weather={weather} onePlace={onePlace} />;
 };
