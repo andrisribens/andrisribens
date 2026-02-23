@@ -7,6 +7,7 @@ interface PageProps {
 }
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export default async function Weather({ searchParams }: PageProps) {
   const placeData = searchParams?.place ?? '';
@@ -15,7 +16,9 @@ export default async function Weather({ searchParams }: PageProps) {
     <>
       <WeatherTop />
       <PlaceInput />
-      {placeData && <WeatherFactsServer placeData={placeData} />}
+      {placeData && (
+        <WeatherFactsServer key={placeData} placeData={placeData} />
+      )}
     </>
   );
 }

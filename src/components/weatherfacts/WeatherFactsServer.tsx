@@ -41,7 +41,6 @@ const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
   let weather: any;
   try {
     weather = await getWeather(latNum, lonNum);
-    console.log('weather from api: ', weather);
   } catch (err) {
     console.error('Error fetching weather data:', err);
     return (
