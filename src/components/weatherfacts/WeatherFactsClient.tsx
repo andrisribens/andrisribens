@@ -32,6 +32,7 @@ type TimeSeriesItem = {
 };
 
 const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
+  console.log('OnePlace: ', onePlace);
   console.log('Weather from props: ', weather);
   const units = weather.properties.meta.units;
   const timeseries: TimeSeriesItem[] = weather.properties.timeseries;
