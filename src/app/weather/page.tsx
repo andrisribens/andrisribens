@@ -10,7 +10,9 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export default async function Weather({ searchParams }: PageProps) {
-  const placeData = searchParams?.place ?? '';
+  const params = await searchParams;
+  const place = params?.place;
+  const placeData = Array.isArray(place) ? (place[0] ?? '') : (place ?? '');
 
   return (
     <>
