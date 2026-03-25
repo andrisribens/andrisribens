@@ -35,6 +35,8 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  border: none;
+  background-color: unset;
 }
 .onePlace__close:hover img {
   filter: invert(1);

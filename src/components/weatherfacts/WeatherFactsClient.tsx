@@ -1,44 +1,79 @@
 'use client';
+
 import styles from './WeatherFacts.module.scss';
-import React, { Suspense, useState } from 'react';
+import React, { Suspense } from 'react';
 import dayjs from 'dayjs';
 import * as motion from 'motion/react-client';
-
 import relativeTime from 'dayjs/plugin/relativeTime';
-
 import duration from 'dayjs/plugin/duration';
 import Image from 'next/image';
 import WeatherCard from '../weatherCard/WeatherCard';
-import NextCard, { CardInfo } from '../nextCard/NextCard';
+import NextCard from '../nextCard/NextCard';
 import ChartComponent from '../chartComponent/ChartComponent';
-import SearchedPlaces from '../searchedPlaces/SearchedPlaces';
+import SearchedPlaces, {
+  type SearchedPlace,
+} from '../searchedPlaces/SearchedPlaces';
 
-type WeatherFactsProps = {
-  onePlace: any;
-  weather: any;
+dayjs.extend(relativeTime);
+dayjs.extend(duration);
+
+type WeatherDetails = {
+  air_pressure_at_sea_level?: number;
+  air_temperature?: number;
+  cloud_area_fraction?: number;
+  relative_humidity?: number;
+  wind_from_direction?: number;
+  wind_speed?: number;
+  precipitation_amount?: number;
 };
 
 type TimeSeriesItem = {
   time: string;
   data: {
     instant: {
-      details: {
-        air_temperature: number;
-        [key: string]: number;
-      };
+      details: WeatherDetails;
     };
-    [key: string]: any;
+    next_1_hours?: {
+      summary?: { symbol_code?: string };
+      details?: WeatherDetails;
+    };
+    next_6_hours?: {
+      summary?: { symbol_code?: string };
+      details?: WeatherDetails;
+    };
+    next_12_hours?: {
+      summary?: { symbol_code?: string };
+      details?: WeatherDetails;
+    };
+    [key: string]: unknown;
   };
 };
 
+type WeatherData = {
+  properties: {
+    meta: {
+      units: Record<string, string>;
+    };
+    timeseries: TimeSeriesItem[];
+  };
+};
+
+type WeatherFactsProps = {
+  onePlace: SearchedPlace;
+  weather: WeatherData;
+};
+
 const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
-  console.log('OnePlace: ', onePlace);
-  console.log('Weather from props: ', weather);
   const units = weather.properties.meta.units;
-  const timeseries: TimeSeriesItem[] = weather.properties.timeseries;
-  const currentData = timeseries[0].data;
-  const in1h = currentData.next_1_hours;
-  const instantData = currentData.instant.details;
+  const timeseries = weather.properties.timeseries;
+
+  const currentData = timeseries[0]?.data;
+  const in1h = currentData?.next_1_hours;
+  const instantData = currentData?.instant?.details;
+
+  if (!currentData || !instantData) {
+    return <div>No weather data available.</div>;
+  }
 
   const {
     air_temperature,
@@ -51,28 +86,26 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
 
   const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
 
-  const getCompassLabel = (angle: number) =>
-    directions[Math.round(angle / 45) % 8];
+  const getCompassLabel = (angle?: number) => {
+    if (typeof angle !== 'number') return '';
+    return directions[Math.round(angle / 45) % 8];
+  };
 
   const wind_from_direction_label = getCompassLabel(wind_from_direction);
 
-  // Data for nextData cards
   const nextData = Object.entries(currentData)
-    .filter(
-      ([key]) => key !== 'instant', // Exclude `instant`
-    )
-    .sort(
-      ([a], [b]) =>
-        a === 'next_12_hours' ? 1 : b === 'next_12_hours' ? -1 : 0, //Put object part with specific key "next_12_hours" at the end
-    );
+    .filter(([key]) => key !== 'instant')
+    .sort(([a], [b]) =>
+      a === 'next_12_hours' ? 1 : b === 'next_12_hours' ? -1 : 0,
+    ) as [
+    string,
+    {
+      summary?: { symbol_code?: string };
+      details?: WeatherDetails;
+    },
+  ][];
 
-  // These are arrays for table/graph
-  const allTimes: string[] = timeseries.map(
-    (timestamp: { time: string }) => timestamp.time,
-  );
-
-  dayjs.extend(relativeTime);
-  dayjs.extend(duration);
+  const allTimes = timeseries.map((timestamp) => timestamp.time);
 
   const getSpecificRelativeTime = (time: string) => {
     const now = dayjs();
@@ -80,7 +113,7 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
     const diffInSeconds = target.diff(now, 'seconds');
 
     if (diffInSeconds <= 0) {
-      return 'now'; // Event already passed
+      return 'now';
     }
 
     const d = dayjs.duration(diffInSeconds, 'seconds');
@@ -88,12 +121,12 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
     const hours = d.hours();
     const minutes = d.minutes();
 
-    // Build a human-readable relative time
-    const parts = [];
+    const parts: string[] = [];
     if (days > 0) parts.push(`${days} day${days > 1 ? 's' : ''}`);
     if (hours > 0) parts.push(`${hours} hour${hours > 1 ? 's' : ''}`);
-    if (hours < 1 && minutes > 0)
+    if (hours < 1 && minutes > 0) {
       parts.push(`${minutes} minute${minutes > 1 ? 's' : ''}`);
+    }
 
     return `in ${parts.join(' ')}`;
   };
@@ -101,86 +134,70 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
   const allRelativeTimes = allTimes.map(getSpecificRelativeTime);
 
   const first24RelativeTimes = allRelativeTimes.filter(
-    (time, index) => index < 25,
+    (_, index) => index < 25,
   );
-
   const next24RelativeTimes = allRelativeTimes.filter(
-    (time, index) => index >= 25 && index < 57,
+    (_, index) => index >= 25 && index < 57,
   );
 
   const allTemperatures = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.air_temperature,
+    (timestamp) => timestamp.data.instant.details.air_temperature ?? null,
   );
 
-  const first24Temperatures = allTemperatures.filter(
-    (time, index) => index < 25,
-  );
-
+  const first24Temperatures = allTemperatures.filter((_, index) => index < 25);
   const next24Temperatures = allTemperatures.filter(
-    (time, index) => index >= 25 && index < 57,
+    (_, index) => index >= 25 && index < 57,
   );
 
   const allWindspeeds = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.wind_speed,
+    (timestamp) => timestamp.data.instant.details.wind_speed ?? null,
   );
 
   const allWindDirections = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.wind_from_direction,
+    (timestamp) => timestamp.data.instant.details.wind_from_direction ?? null,
   );
 
-  const first24Windspeeds = allWindspeeds.filter((time, index) => index < 25);
+  const first24Windspeeds = allWindspeeds.filter((_, index) => index < 25);
   const next24Windspeeds = allWindspeeds.filter(
-    (time, index) => index >= 25 && index < 57,
+    (_, index) => index >= 25 && index < 57,
   );
 
   const first24WindDirections = allWindDirections.filter(
-    (time, index) => index < 25,
+    (_, index) => index < 25,
   );
-
   const next24WindDirections = allWindDirections.filter(
-    (time, index) => index >= 25 && index < 57,
-  );
-
-  const allPrecipitation = timeseries.map(
-    (timestamp) => timestamp.data.instant.details,
-  );
-
-  const first24Precipitation = allPrecipitation.filter(
-    (time, index) => index < 25,
-  );
-  const next24Precipitation = allPrecipitation.filter(
-    (time, index) => index >= 25 && index < 57,
+    (_, index) => index >= 25 && index < 57,
   );
 
   const allPressure = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.air_pressure_at_sea_level,
+    (timestamp) =>
+      timestamp.data.instant.details.air_pressure_at_sea_level ?? null,
   );
 
-  const first24Pressure = allPressure.filter((time, index) => index < 25);
+  const first24Pressure = allPressure.filter((_, index) => index < 25);
   const next24Pressure = allPressure.filter(
-    (time, index) => index >= 25 && index < 57,
+    (_, index) => index >= 25 && index < 57,
   );
 
   const allHumidity = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.relative_humidity,
+    (timestamp) => timestamp.data.instant.details.relative_humidity ?? null,
   );
 
-  const first24Humidity = allHumidity.filter((time, index) => index < 25);
+  const first24Humidity = allHumidity.filter((_, index) => index < 25);
   const next24Humidity = allHumidity.filter(
-    (time, index) => index >= 25 && index < 57,
+    (_, index) => index >= 25 && index < 57,
   );
 
   const allCloudArea = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.cloud_area_fraction,
+    (timestamp) => timestamp.data.instant.details.cloud_area_fraction ?? null,
   );
 
-  const first24CloudArea = allCloudArea.filter((time, index) => index < 25);
+  const first24CloudArea = allCloudArea.filter((_, index) => index < 25);
   const next24CloudArea = allCloudArea.filter(
-    (time, index) => index >= 25 && index < 57,
+    (_, index) => index >= 25 && index < 57,
   );
 
-  const weatherIconPath: string =
-    '/img/weather-icons/' + in1h.summary.symbol_code + '.svg';
+  const weatherIconPath = `/img/weather-icons/${in1h?.summary?.symbol_code ?? 'clearsky_day'}.svg`;
 
   const blueColor = 'rgba(99, 190, 255, 0.7)';
   const orangeColor = 'rgba(240, 188, 54, 0.7)';
@@ -211,7 +228,6 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
         ],
       },
     },
-
     {
       type: 'bar',
       id: 'wind',
@@ -348,7 +364,6 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
         ],
       },
     },
-
     {
       type: 'bar',
       id: 'wind',
@@ -458,146 +473,149 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
   ];
 
   return (
-    <>
-      <Suspense>
-        <div className={styles.weather}>
-          <div className="container">
-            <div className={styles.weather__inner}>
-              <div className={styles.weather__citywrap}>
-                <p className={styles.weather__desc}>
-                  Temperature for: {onePlace.display_name}
-                </p>
-                <motion.div
-                  key={onePlace.name}
-                  initial={{ opacity: 0, x: -600 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -900 }}
-                  className={
-                    air_temperature <= 0
-                      ? `${styles.weather__city} ${styles.cold}`
-                      : styles.weather__city
-                  }
-                  transition={{
-                    duration: 3,
-                    ease: [0, 0.71, 0.2, 1.01],
-                    bounce: 0.25,
-                  }}
-                >
-                  <h2>{onePlace.name}</h2>
-                </motion.div>
+    <Suspense>
+      <div className={styles.weather}>
+        <div className="container">
+          <div className={styles.weather__inner}>
+            <div className={styles.weather__citywrap}>
+              <p className={styles.weather__desc}>
+                Temperature for: {onePlace.display_name}
+              </p>
 
-                <div className={styles.weather__searchItemsList}>
-                  <SearchedPlaces place={onePlace} />
-                </div>
+              <motion.div
+                key={onePlace.name}
+                initial={{ opacity: 0, x: -600 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -900 }}
+                className={
+                  (air_temperature ?? 0) <= 0
+                    ? `${styles.weather__city} ${styles.cold}`
+                    : styles.weather__city
+                }
+                transition={{
+                  duration: 3,
+                  ease: [0, 0.71, 0.2, 1.01],
+                  bounce: 0.25,
+                }}
+              >
+                <h2>{onePlace.name}</h2>
+              </motion.div>
+
+              <div className={styles.weather__searchItemsList}>
+                <SearchedPlaces place={onePlace} />
+              </div>
+            </div>
+
+            <div className={styles.weather__currentlist}>
+              <div className={styles.weather__currentlistitem}>
+                <Image
+                  className={styles.weather__image}
+                  src={weatherIconPath}
+                  alt="weather description icon"
+                  width={240}
+                  height={240}
+                />
               </div>
 
-              <div className={styles.weather__currentlist}>
+              {air_temperature != null && (
                 <div className={styles.weather__currentlistitem}>
-                  <Image
-                    className={styles.weather__image}
-                    src={weatherIconPath}
-                    alt="weather description icon"
-                    width={240}
-                    height={240}
+                  <WeatherCard
+                    value={air_temperature}
+                    units={units.air_temperature}
+                    label="Temperature"
                   />
                 </div>
+              )}
 
-                {air_temperature !== null && (
-                  <div className={styles.weather__currentlistitem}>
-                    <WeatherCard
-                      value={air_temperature}
-                      units={units.air_temperature}
-                      label="Temperature"
-                    />
-                  </div>
-                )}
-
-                {wind_speed !== null && wind_from_direction !== null && (
-                  <div className={styles.weather__currentlistitem}>
-                    <WeatherCard
-                      value={wind_speed}
-                      units={units.wind_speed}
-                      label="Wind Speed"
-                      image={{
-                        windDirection: wind_from_direction,
-                        src: '/img/arrow-down.svg',
-                        alt: 'Weather Direction Arrow',
-                      }}
-                      windDirectionLabel={wind_from_direction_label}
-                    />
-                  </div>
-                )}
-
-                {cloud_area_fraction !== null && (
-                  <div className={styles.weather__currentlistitem}>
-                    <WeatherCard
-                      value={cloud_area_fraction}
-                      units={units.cloud_area_fraction}
-                      label="Cloud Area Fraction"
-                    />
-                  </div>
-                )}
-
-                {air_pressure_at_sea_level !== null && (
-                  <div className={styles.weather__currentlistitem}>
-                    <WeatherCard
-                      value={air_pressure_at_sea_level}
-                      units={units.air_pressure_at_sea_level}
-                      label="Air Pressure"
-                    />
-                  </div>
-                )}
-
-                {relative_humidity !== null && (
-                  <div className={styles.weather__currentlistitem}>
-                    <WeatherCard
-                      value={relative_humidity}
-                      units={units.relative_humidity}
-                      label="Relative Humidity"
-                    />
-                  </div>
-                )}
-              </div>
-              <div>
-                <h3 className={styles.weather__nexttitle}>
-                  Precipitation for next 12 hours
-                </h3>
-
-                <div className={styles.weather__nextlist}>
-                  {nextData.map(([key, value]) => {
-                    const symbolCode = value.summary?.symbol_code ?? 'n/a';
-                    const precipitationAmount =
-                      value.details?.precipitation_amount;
-                    return (
-                      <NextCard
-                        key={key}
-                        title={key
-                          .replace(/_/g, ' ')
-                          .replace(/^./, (char) => char.toUpperCase())}
-                        image={{
-                          src: '/img/weather-icons/' + symbolCode + '.svg',
-                          alt: symbolCode,
-                        }}
-                        precipitation={precipitationAmount}
-                        units={units.precipitation_amount}
-                      />
-                    );
-                  })}
+              {wind_speed != null && wind_from_direction != null && (
+                <div className={styles.weather__currentlistitem}>
+                  <WeatherCard
+                    value={wind_speed}
+                    units={units.wind_speed}
+                    label="Wind Speed"
+                    image={{
+                      windDirection: wind_from_direction,
+                      src: '/img/arrow-down.svg',
+                      alt: 'Weather Direction Arrow',
+                    }}
+                    windDirectionLabel={wind_from_direction_label}
+                  />
                 </div>
-              </div>
-              <ChartComponent
-                charts={chartData}
-                title="Weather data for next 24 hours"
-              />
-              <ChartComponent
-                charts={secondChartData}
-                title="Weather data for next 3 days"
-              />
+              )}
+
+              {cloud_area_fraction != null && (
+                <div className={styles.weather__currentlistitem}>
+                  <WeatherCard
+                    value={cloud_area_fraction}
+                    units={units.cloud_area_fraction}
+                    label="Cloud Area Fraction"
+                  />
+                </div>
+              )}
+
+              {air_pressure_at_sea_level != null && (
+                <div className={styles.weather__currentlistitem}>
+                  <WeatherCard
+                    value={air_pressure_at_sea_level}
+                    units={units.air_pressure_at_sea_level}
+                    label="Air Pressure"
+                  />
+                </div>
+              )}
+
+              {relative_humidity != null && (
+                <div className={styles.weather__currentlistitem}>
+                  <WeatherCard
+                    value={relative_humidity}
+                    units={units.relative_humidity}
+                    label="Relative Humidity"
+                  />
+                </div>
+              )}
             </div>
+
+            <div>
+              <h3 className={styles.weather__nexttitle}>
+                Precipitation for next 12 hours
+              </h3>
+
+              <div className={styles.weather__nextlist}>
+                {nextData.map(([key, value]) => {
+                  const symbolCode = value.summary?.symbol_code ?? 'n/a';
+                  const precipitationAmount =
+                    value.details?.precipitation_amount;
+
+                  return (
+                    <NextCard
+                      key={key}
+                      title={key
+                        .replace(/_/g, ' ')
+                        .replace(/^./, (char) => char.toUpperCase())}
+                      image={{
+                        src: `/img/weather-icons/${symbolCode}.svg`,
+                        alt: symbolCode,
+                      }}
+                      precipitation={precipitationAmount}
+                      units={units.precipitation_amount}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+
+            <ChartComponent
+              charts={chartData}
+              title="Weather data for next 24 hours"
+            />
+
+            <ChartComponent
+              charts={secondChartData}
+              title="Weather data for next 3 days"
+            />
           </div>
         </div>
-      </Suspense>
-    </>
+      </div>
+    </Suspense>
   );
 };
 
