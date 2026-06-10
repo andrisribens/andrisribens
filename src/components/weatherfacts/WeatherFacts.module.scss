@@ -16,6 +16,45 @@
         }
     }
 
+    &__hero {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+
+        @include resp-max("s") {
+            gap: 2rem;
+        }
+    }
+
+    &__heroOverlay {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(3px);
+        pointer-events: all;
+    }
+
+    &__heroError {
+        position: absolute;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 11;
+        margin: 0;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.75rem;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+        font-size: 1.4rem;
+        text-align: center;
+        max-width: calc(100% - 2rem);
+    }
+
     &__city {
         font-size: 7rem;
         color: var.$orange;

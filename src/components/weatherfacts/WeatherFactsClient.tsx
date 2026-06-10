@@ -13,6 +13,7 @@ import ChartComponent from '../chartComponent/ChartComponent';
 import SearchedPlaces, {
   type SearchedPlace,
 } from '../searchedPlaces/SearchedPlaces';
+import Loader from '@/app/weather/loading';
 
 dayjs.extend(relativeTime);
 dayjs.extend(duration);
@@ -61,9 +62,16 @@ type WeatherData = {
 type WeatherFactsProps = {
   onePlace: SearchedPlace;
   weather: WeatherData;
+  isLoading?: boolean;
+  error?: string | null;
 };
 
-const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
+const WeatherFactsClient = ({
+  onePlace,
+  weather,
+  isLoading = false,
+  error = null,
+}: WeatherFactsProps) => {
   const units = weather.properties.meta.units;
   const timeseries = weather.properties.timeseries;
 
@@ -477,36 +485,37 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
       <div className={styles.weather}>
         <div className="container">
           <div className={styles.weather__inner}>
-            <div className={styles.weather__citywrap}>
-              <p className={styles.weather__desc}>
-                Temperature for: {onePlace.display_name}
-              </p>
+            <div className={styles.weather__hero}>
+              <div className={styles.weather__citywrap}>
+                <p className={styles.weather__desc}>
+                  Temperature for: {onePlace.display_name}
+                </p>
 
-              <motion.div
-                key={onePlace.name}
-                initial={{ opacity: 0, x: -600 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -900 }}
-                className={
-                  (air_temperature ?? 0) <= 0
-                    ? `${styles.weather__city} ${styles.cold}`
-                    : styles.weather__city
-                }
-                transition={{
-                  duration: 3,
-                  ease: [0, 0.71, 0.2, 1.01],
-                  bounce: 0.25,
-                }}
-              >
-                <h2>{onePlace.name}</h2>
-              </motion.div>
+                <motion.div
+                  key={onePlace.name}
+                  initial={{ opacity: 0, x: -600 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -900 }}
+                  className={
+                    (air_temperature ?? 0) <= 0
+                      ? `${styles.weather__city} ${styles.cold}`
+                      : styles.weather__city
+                  }
+                  transition={{
+                    duration: 3,
+                    ease: [0, 0.71, 0.2, 1.01],
+                    bounce: 0.25,
+                  }}
+                >
+                  <h2>{onePlace.name}</h2>
+                </motion.div>
 
-              <div className={styles.weather__searchItemsList}>
-                <SearchedPlaces place={onePlace} />
+                <div className={styles.weather__searchItemsList}>
+                  <SearchedPlaces place={onePlace} />
+                </div>
               </div>
-            </div>
 
-            <div className={styles.weather__currentlist}>
+              <div className={styles.weather__currentlist}>
               <div className={styles.weather__currentlistitem}>
                 <Image
                   className={styles.weather__image}
@@ -571,6 +580,23 @@ const WeatherFactsClient = ({ onePlace, weather }: WeatherFactsProps) => {
                     label="Relative Humidity"
                   />
                 </div>
+              )}
+              </div>
+
+              {isLoading && (
+                <div
+                  className={styles.weather__heroOverlay}
+                  aria-busy="true"
+                  aria-live="polite"
+                >
+                  <Loader />
+                </div>
+              )}
+
+              {error && !isLoading && (
+                <p className={styles.weather__heroError} role="alert">
+                  {error}
+                </p>
               )}
             </div>
 
