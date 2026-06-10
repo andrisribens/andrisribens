@@ -3,12 +3,27 @@ import type { Metadata } from 'next';
 import '../styles/globals.scss';
 import Footer from '../components/footer/Footer';
 
-// Optional: Uncomment and customize metadata if needed
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://andrisribens.com';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'Andris Rībens website',
   description:
     'This is Andris Rībens personal website, where I showcase some of my personal projects.',
-  icons: { icon: '/favicon.ico', apple: '/apple-touch-icon.png' },
+  manifest: '/img/site.webmanifest',
+  openGraph: {
+    title: 'Andris Rībens website',
+    description:
+      'This is Andris Rībens personal website, where I showcase some of my personal projects.',
+    url: '/',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Andris Rībens website',
+    description:
+      'This is Andris Rībens personal website, where I showcase some of my personal projects.',
+  },
 };
 
 export default function RootLayout({

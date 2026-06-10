@@ -4,24 +4,16 @@ import '../../styles/globals.scss';
 export const metadata: Metadata = {
   title: 'Weather Now - Local Forecasts',
   description: 'Live weather updates and forecasts by location.',
+  manifest: '/img/weather/site.webmanifest',
   openGraph: {
     title: 'Weather Now - Local Forecasts',
     description: 'Live weather updates and forecasts by location.',
-    url: 'https://andrisribens.com/weather',
-    images: [
-      {
-        url: 'https://andrisribens.com/og/weather.png',
-        width: 1200,
-        height: 630,
-        alt: 'Weather Forecast Screenshot',
-      },
-    ],
+    url: '/weather',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Weather Now - Local Forecasts',
     description: 'Live weather updates and forecasts by location.',
-    images: ['https://andrisribens.com/og/weather.png'],
   },
 };
 
