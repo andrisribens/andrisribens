@@ -1,6 +1,8 @@
 import PlaceInput from '@/components/placeInput/PlaceInput';
 import WeatherFactsServer from '@/components/weatherfacts/WeatherFactsServer';
 import WeatherTop from '@/components/weatherTop/WeatherTop';
+import Loader from '@/app/weather/loading';
+import { Suspense } from 'react';
 
 interface PageProps {
   searchParams: { place?: string };
@@ -19,7 +21,16 @@ export default async function Weather({ searchParams }: PageProps) {
       <WeatherTop />
       <PlaceInput />
       {placeData && (
-        <WeatherFactsServer key={placeData} placeData={placeData} />
+        <Suspense
+          key={placeData}
+          fallback={
+            <div className="container">
+              <Loader />
+            </div>
+          }
+        >
+          <WeatherFactsServer placeData={placeData} />
+        </Suspense>
       )}
     </>
   );
