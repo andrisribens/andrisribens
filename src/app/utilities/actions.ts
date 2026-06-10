@@ -79,7 +79,7 @@ export async function getWeather(
 
 // Get Place data
 
-interface Place {
+export interface Place {
   place_id: number;
   licence: string;
   osm_type: string;

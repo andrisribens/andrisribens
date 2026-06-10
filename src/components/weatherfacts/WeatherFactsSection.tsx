@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ComponentProps } from 'react';
-import { getPlaceFree, getWeather } from '@/app/utilities/actions';
+import { getPlaceFree, getWeather, type Place } from '@/app/utilities/actions';
 import Loader from '@/app/weather/loading';
 import WeatherFactsClient from './WeatherFactsClient';
 import type { SearchedPlace } from '../searchedPlaces/SearchedPlaces';
@@ -44,9 +44,9 @@ const WeatherFactsSection = ({ placeData }: { placeData: string }) => {
           return;
         }
 
-        const onePlace = places[0] as SearchedPlace;
-        const latNum = toTwoDecimalsNumber(onePlace?.lat);
-        const lonNum = toTwoDecimalsNumber(onePlace?.lon);
+        const onePlace: Place = places[0];
+        const latNum = toTwoDecimalsNumber(onePlace.lat);
+        const lonNum = toTwoDecimalsNumber(onePlace.lon);
 
         if (latNum === null || lonNum === null) {
           setError('Found a place, but its coordinates look invalid.');
