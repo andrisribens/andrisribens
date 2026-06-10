@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Generated CSS mirror (source: src/components/**/*.module.scss; see AGENTS.md)
+/public/css/

@@ -1,0 +1,27 @@
+---
+description: Stack, tooling, and workflow for this repo
+alwaysApply: true
+---
+
+# Project stack
+
+Personal site + weather app: **Next.js 16**, **React 19**, **TypeScript**, **pnpm**.
+
+## Commands
+
+- `pnpm dev` — dev server (Next compiles SCSS on import)
+- `pnpm build` — runs `build-sass` then `next build`
+- `pnpm run build-sass` — optional; mirrors SCSS to `public/css/` (not used by the app)
+- `pnpm lint` — ESLint
+
+## Workflow
+
+- Use **pnpm**, not npm or yarn.
+- Keep diffs minimal; match existing patterns in the file you are editing.
+- Do not commit `.env*.local` or secrets.
+- **Styles:** edit `src/components/**/*.module.scss` only. Next.js compiles SCSS on import; `build-sass.mjs` mirrors to `public/css/` at build time.
+- **Git:** never commit `public/css/` (gitignored). Commit `.scss` source files only.
+
+## Path alias
+
+Import from `@/` → `src/` (e.g. `@/components/placeInput/PlaceInput`).

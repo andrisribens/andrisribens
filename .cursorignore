@@ -1,0 +1,11 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+
+# Large static assets (low signal for code search)
+public/img/weather-icons/
+public/fonts/
+
+# Generated CSS mirror (not source of truth)
+public/css/

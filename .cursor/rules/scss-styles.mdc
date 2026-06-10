@@ -1,0 +1,25 @@
+---
+description: SCSS and styling conventions
+globs: src/**/*.scss
+alwaysApply: false
+---
+
+# SCSS styles
+
+## Source of truth
+
+- Component styles: `src/components/<name>/<Name>.module.scss`
+- Global styles: `src/styles/` (`globals.scss`, `_variables.scss`, `_fonts.scss`)
+- Generated mirror: `public/css/` — **do not edit or commit** (gitignored). Next.js compiles `.module.scss` imports directly.
+
+## Conventions
+
+- Use CSS modules: `import styles from './Component.module.scss'`
+- BEM-style class names (e.g. `weatherCard`, `weatherCard__main`, `weatherCard__label`)
+- Shared tokens from `src/styles/_variables.scss` where applicable
+
+## After editing
+
+- `pnpm dev` recompiles SCSS automatically — no extra step needed for local preview.
+- `pnpm build` runs `build-sass` then `next build`; the `public/css/` mirror is regenerated locally but not committed.
+- Commit only the `.scss` file changes.

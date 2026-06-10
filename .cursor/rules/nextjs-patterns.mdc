@@ -1,0 +1,33 @@
+---
+description: Next.js App Router and React conventions
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Next.js patterns
+
+## Server vs client
+
+- Default to **server components** (no `'use client'`).
+- Add `'use client'` only for browser APIs, hooks, or client interactivity (e.g. `PlaceInput`, `SearchedPlaces`, `ChartComponent`).
+- Server actions and data fetching live in `src/app/utilities/actions.ts` (`'use server'`).
+
+## Routes
+
+- App Router under `src/app/`. Weather route: `src/app/weather/`.
+- Page metadata via `export const metadata` in `layout.tsx` — not Pages Router `head.tsx`.
+- Weather page uses `searchParams.place`, `dynamic = 'force-dynamic'`, and `runtime = 'nodejs'`.
+
+## Server/client split
+
+Follow the `WeatherFactsServer` → `WeatherFactsClient` pattern: fetch on the server, pass props to a thin client component for charts or interactivity.
+
+## APIs
+
+- Weather: `NEXT_PUBLIC_WEATHER_API_URL`
+- Geocoding: `NEXT_PUBLIC_PLACE_API_URL`
+
+## Imports
+
+- Use `@/` path alias for cross-folder imports.
+- Co-locate component styles: `./ComponentName.module.scss`.
