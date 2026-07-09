@@ -6,6 +6,7 @@ interface CardInfo {
   value?: number;
   units?: string;
   label: string;
+  sublabel?: string;
   image?: {
     windDirection?: number;
     src: string;
@@ -23,6 +24,9 @@ const WeatherCard = (cardInfo: CardInfo) => {
           <span className={styles.weatherCard__unit}>{cardInfo.units}</span>
         </div>
         <span className={styles.weatherCard__label}>{cardInfo.label}</span>
+        {cardInfo.sublabel && (
+          <span className={styles.weatherCard__sublabel}>{cardInfo.sublabel}</span>
+        )}
       </div>
 
       {cardInfo.image && (

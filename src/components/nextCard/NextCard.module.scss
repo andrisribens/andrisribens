@@ -9,7 +9,7 @@
     background-color: var.$blue;
     border-radius: 20px;
     gap: 1.5rem;
-    box-shadow: 0 0 8px 0 rgba(black, 0.3);
+    // box-shadow: 0 0 8px 0 rgba(black, 0.3);
     min-height: 10rem;
 
 
@@ -55,7 +55,7 @@
     }
 
     &__precipitationvalue {
-        font-size: 6rem;
+        font-size: 4.4rem;
         font-weight: 600;
         display: inline-block;
         color: var.$white;
@@ -93,6 +93,21 @@
 
         @include resp-max("s") {
             // margin-top: -1rem;
+        }
+    }
+
+    &__stats {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        column-gap: 2rem;
+        row-gap: 0.35rem;
+        color: var.$white;
+        font-size: 1.3rem;
+
+        @include resp-max("s") {
+            font-size: 1.1rem;
         }
     }
 }

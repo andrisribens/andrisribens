@@ -1,25 +1,47 @@
 'use client';
 
-import { useEffect, useRef, useState, type ComponentProps } from 'react';
-import { getPlaceFree, getWeather, type Place } from '@/app/utilities/actions';
+import { useEffect, useRef, useState } from 'react';
+import {
+  getDaylightData,
+  getWeather,
+  reverseGeocode,
+  searchPlaces,
+  type DaylightData,
+  type Place,
+} from '@/app/utilities/actions';
+import {
+  getPlaceDateString,
+  getPlaceTimezone,
+  getPlaceTimezoneOffset,
+} from '@/app/utilities/chartLabels';
+import { buildMinimalPlace } from '@/app/utilities/placeSearch';
+import type { WeatherData } from '@/app/utilities/weatherTypes';
 import Loader from '@/app/weather/loading';
 import WeatherFactsClient from './WeatherFactsClient';
-import type { SearchedPlace } from '../searchedPlaces/SearchedPlaces';
-
-type WeatherData = ComponentProps<typeof WeatherFactsClient>['weather'];
 
 type DisplayState = {
   weather: WeatherData;
-  onePlace: SearchedPlace;
+  onePlace: Place;
+  daylight: DaylightData | null;
 };
 
-function toTwoDecimalsNumber(value: string): number | null {
-  const n = Number.parseFloat(value);
+function toTwoDecimalsNumber(value: string | number): number | null {
+  const n = typeof value === 'number' ? value : Number.parseFloat(value);
   if (!Number.isFinite(n)) return null;
   return Number.parseFloat(n.toFixed(2));
 }
 
-const WeatherFactsSection = ({ placeData }: { placeData: string }) => {
+type WeatherFactsSectionProps = {
+  placeData: string;
+  lat?: number | null;
+  lon?: number | null;
+};
+
+const WeatherFactsSection = ({
+  placeData,
+  lat,
+  lon,
+}: WeatherFactsSectionProps) => {
   const [displayData, setDisplayData] = useState<DisplayState | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,16 +57,40 @@ const WeatherFactsSection = ({ placeData }: { placeData: string }) => {
 
     (async () => {
       try {
-        const places = await getPlaceFree(query);
-        if (requestId !== requestIdRef.current) return;
+        const latFromUrl = lat != null ? toTwoDecimalsNumber(lat) : null;
+        const lonFromUrl = lon != null ? toTwoDecimalsNumber(lon) : null;
+        const hasCoords = latFromUrl !== null && lonFromUrl !== null;
 
-        if (!Array.isArray(places) || places.length === 0) {
-          setError('No place found');
-          setIsLoading(false);
-          return;
+        let onePlace: Place;
+
+        if (hasCoords) {
+          onePlace = buildMinimalPlace(query, latFromUrl, lonFromUrl);
+
+          try {
+            const enriched = await reverseGeocode(latFromUrl, lonFromUrl);
+            if (requestId !== requestIdRef.current) return;
+            if (enriched) {
+              onePlace = {
+                ...enriched,
+                name: enriched.name || query,
+              };
+            }
+          } catch (reverseError) {
+            console.error('Error enriching place metadata:', reverseError);
+          }
+        } else {
+          const places = await searchPlaces(query, 1);
+          if (requestId !== requestIdRef.current) return;
+
+          if (!Array.isArray(places) || places.length === 0) {
+            setError('No place found');
+            setIsLoading(false);
+            return;
+          }
+
+          onePlace = places[0];
         }
 
-        const onePlace: Place = places[0];
         const latNum = toTwoDecimalsNumber(onePlace.lat);
         const lonNum = toTwoDecimalsNumber(onePlace.lon);
 
@@ -57,7 +103,26 @@ const WeatherFactsSection = ({ placeData }: { placeData: string }) => {
         const weather = (await getWeather(latNum, lonNum)) as WeatherData;
         if (requestId !== requestIdRef.current) return;
 
-        setDisplayData({ weather, onePlace });
+        let daylight: DaylightData | null = null;
+        try {
+          const placeTimezone =
+            getPlaceTimezone(latNum, lonNum) ??
+            Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const now = new Date();
+
+          daylight = await getDaylightData(
+            latNum,
+            lonNum,
+            getPlaceDateString(placeTimezone, now),
+            getPlaceTimezoneOffset(placeTimezone, now),
+          );
+        } catch (daylightError) {
+          console.error('Error fetching daylight data:', daylightError);
+        }
+
+        if (requestId !== requestIdRef.current) return;
+
+        setDisplayData({ weather, onePlace, daylight });
         setIsLoading(false);
       } catch (err) {
         if (requestId !== requestIdRef.current) return;
@@ -66,7 +131,7 @@ const WeatherFactsSection = ({ placeData }: { placeData: string }) => {
         setIsLoading(false);
       }
     })();
-  }, [placeData]);
+  }, [placeData, lat, lon]);
 
   if (!displayData && isLoading) {
     return (
@@ -86,6 +151,7 @@ const WeatherFactsSection = ({ placeData }: { placeData: string }) => {
     <WeatherFactsClient
       weather={displayData.weather}
       onePlace={displayData.onePlace}
+      daylight={displayData.daylight}
       isLoading={isLoading}
       error={error}
     />

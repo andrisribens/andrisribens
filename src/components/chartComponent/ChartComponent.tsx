@@ -16,6 +16,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
+import { getChartScale } from '@/app/utilities/chartScale';
 
 interface WeatherChartProps {
   data: ChartData;
@@ -54,6 +55,7 @@ ChartJS.register(
 const ChartComponent = ({
   charts,
   title,
+  timezoneLabel,
 }: {
   charts: Array<{
     data: any;
@@ -63,6 +65,7 @@ const ChartComponent = ({
     options?: any;
   }>;
   title: string;
+  timezoneLabel?: string;
 }) => {
   const [activeChartId, setActiveChartId] = useState<string>(
     charts[0]?.id || ''
@@ -85,26 +88,19 @@ const ChartComponent = ({
     .map((d: ChartDataset) => d.data)
     .flat()
     .filter(
-      (val: number | undefined): val is number => typeof val === 'number'
+      (val: number | undefined): val is number => typeof val === 'number',
     );
 
-  const rawMin = Math.min(...allValues);
-  const rawMax = Math.max(...allValues);
+  const autoScale = getChartScale(activeChart.id, allValues);
 
-  // Round only min and max to cleaner values
-  const buffer = (rawMax - rawMin) * 0.1;
-  const calculatedMin = Math.floor((rawMin - buffer) / 5) * 5;
-  const calculatedMax = Math.ceil((rawMax + buffer) / 5) * 5;
-
-  // Use manually defined values if present, otherwise use calculated ones
   const manualMin = activeChart.options?.scales?.y?.min;
   const manualMax = activeChart.options?.scales?.y?.max;
+  const manualStep = activeChart.options?.scales?.y?.ticks?.stepSize;
 
-  const finalMin = typeof manualMin === 'number' ? manualMin : calculatedMin;
-  const finalMax = typeof manualMax === 'number' ? manualMax : calculatedMax;
-
-  const isTemperature = activeChart.id === 'temperature';
-  const stepSize = isTemperature ? 2 : undefined;
+  const finalMin = typeof manualMin === 'number' ? manualMin : autoScale.min;
+  const finalMax = typeof manualMax === 'number' ? manualMax : autoScale.max;
+  const stepSize =
+    typeof manualStep === 'number' ? manualStep : autoScale.stepSize;
 
   const mergedOptions = {
     ...activeChart.options,
@@ -204,6 +200,9 @@ const ChartComponent = ({
   return (
     <div className={styles.chart}>
       {title && <h3 className={styles.chart__title}>{title}</h3>}
+      {timezoneLabel && (
+        <p className={styles.chart__timezone}>{timezoneLabel}</p>
+      )}
       <div className={styles.chartbuttons}>
         {charts.map((chart) => (
           <button

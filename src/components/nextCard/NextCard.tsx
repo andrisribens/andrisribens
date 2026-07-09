@@ -9,10 +9,62 @@ interface CardInfo {
     alt: string;
   };
   precipitation?: number | string;
+  precipitationMin?: number;
+  precipitationMax?: number;
+  probabilityOfPrecipitation?: number;
+  probabilityOfThunder?: number;
+  temperatureMin?: number;
+  temperatureMax?: number;
   units: string;
+  temperatureUnits?: string;
+}
+
+function hasPrecipitationValue(card: CardInfo): boolean {
+  const { precipitation, precipitationMin, precipitationMax } = card;
+
+  if (typeof precipitation === 'number') {
+    return true;
+  }
+
+  if (precipitationMin != null || precipitationMax != null) {
+    return true;
+  }
+
+  return precipitation != null && precipitation !== '';
+}
+
+function formatPrecipitation(card: CardInfo): string {
+  const { precipitation, precipitationMin, precipitationMax, units } = card;
+
+  if (
+    precipitationMin != null &&
+    precipitationMax != null &&
+    precipitationMin !== precipitationMax
+  ) {
+    return `${precipitationMin}–${precipitationMax} ${units}`;
+  }
+
+  if (
+    precipitationMin != null &&
+    precipitationMax != null &&
+    precipitationMin === precipitationMax
+  ) {
+    return `${precipitationMin} ${units}`;
+  }
+
+  if (typeof precipitation === 'number') {
+    return `${precipitation} ${units}`;
+  }
+
+  return precipitation != null ? String(precipitation) : '';
 }
 
 const NextCard = (cardInfo: CardInfo) => {
+  const precipValue = cardInfo.precipitation;
+  const hasPrecip =
+    (typeof precipValue === 'number' && precipValue > 0) ||
+    (cardInfo.precipitationMax != null && cardInfo.precipitationMax > 0);
+
   return (
     <div className={styles.nextCard}>
       <h3 className={styles.nextCard__title}>{cardInfo.title}</h3>
@@ -25,25 +77,35 @@ const NextCard = (cardInfo: CardInfo) => {
           className={styles.nextCard__image}
         />
         <div>
-          <p
-            className={
-              typeof cardInfo.precipitation === 'number' &&
-              cardInfo.precipitation > 0
-                ? `${styles.nextCard__precipitationvalue} ${styles.blue}`
-                : styles.nextCard__precipitationvalue
-            }
-          >
-            {cardInfo.precipitation}
-          </p>
-          {typeof cardInfo.precipitation === 'number' && (
-            <p className={styles.nextCard__precipitationvaluelabel}>
-              {cardInfo.units}
+          {hasPrecipitationValue(cardInfo) && (
+            <p
+              className={
+                hasPrecip
+                  ? `${styles.nextCard__precipitationvalue} ${styles.blue}`
+                  : styles.nextCard__precipitationvalue
+              }
+            >
+              {formatPrecipitation(cardInfo)}
             </p>
           )}
         </div>
       </div>
 
-      <p className={styles.nextCard__precipitationlabel}>Precipitation</p>
+      <ul className={styles.nextCard__stats}>
+        {cardInfo.probabilityOfPrecipitation != null && (
+          <li>Rain chance: {Math.round(cardInfo.probabilityOfPrecipitation)}%</li>
+        )}
+        {cardInfo.probabilityOfThunder != null &&
+          cardInfo.probabilityOfThunder > 0 && (
+            <li>Thunder: {Math.round(cardInfo.probabilityOfThunder)}%</li>
+          )}
+        {cardInfo.temperatureMin != null && cardInfo.temperatureMax != null && (
+          <li>
+            Temp: {cardInfo.temperatureMin}–{cardInfo.temperatureMax}
+            {cardInfo.temperatureUnits ? ` ${cardInfo.temperatureUnits}` : '°'}
+          </li>
+        )}
+      </ul>
     </div>
   );
 };

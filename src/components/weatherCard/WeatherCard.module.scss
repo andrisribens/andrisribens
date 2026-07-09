@@ -2,7 +2,7 @@
 @use "../../styles/mixins" as *;
 
 .weatherCard {
-    padding: 3rem;
+    padding: 2rem;
     border-radius: 20px;
     background-color: white;
     box-shadow: 0 0 8px 0 rgba(black, 0.3);
@@ -83,6 +83,17 @@
         }
 
         @include resp-max("xs") {
+            font-size: 1.2rem;
+        }
+    }
+
+    &__sublabel {
+        font-size: 1.6rem;
+        display: block;
+        color: var.$orange;
+        margin-top: 0.25rem;
+
+        @include resp-max("s") {
             font-size: 1.2rem;
         }
     }

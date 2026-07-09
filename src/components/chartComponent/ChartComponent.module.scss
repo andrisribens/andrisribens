@@ -38,6 +38,17 @@
             font-size: 2.4rem;
         }
     }
+
+    &__timezone {
+        margin: -2rem 0 3rem;
+        font-size: 1.4rem;
+        color: var.$gray;
+
+        @include resp-max("s") {
+            margin-top: -1.5rem;
+            font-size: 1.2rem;
+        }
+    }
 }
 
 .chartbuttons {
@@ -62,7 +73,7 @@
 
     &__btn {
         padding: 2rem 0.5rem 1rem;
-        width: 25rem;
+        width: 19rem;
         background-color: var.$white;
         border: 1px solid transparent;
         border-color: transparent;

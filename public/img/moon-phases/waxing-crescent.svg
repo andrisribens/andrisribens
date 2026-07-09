@@ -1,0 +1,12 @@
+<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="waxing-crescent-grad" x1="0%" y1="50%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8a9199"/>
+      <stop offset="100%" stop-color="#c8cdd4"/>
+    </linearGradient>
+    <clipPath id="waxing-crescent-clip">
+      <circle cx="24" cy="24" r="18"/>
+    </clipPath>
+  </defs>
+  <circle cx="31" cy="24" r="17" fill="url(#waxing-crescent-grad)" clip-path="url(#waxing-crescent-clip)"/>
+</svg>

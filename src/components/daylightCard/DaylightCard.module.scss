@@ -1,0 +1,91 @@
+@use '../../styles/variables.scss' as var;
+@use '../../styles/mixins' as *;
+
+.daylightCard {
+    padding: 2.5rem 3rem;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 0 8px 0 rgba(black, 0.1);
+    border-bottom: 0.6rem solid var.$orange;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 12rem;
+
+    @include resp-max('m') {
+        padding: 2rem;
+    }
+
+    @include resp-max('s') {
+        padding: 1.5rem;
+        gap: 1rem;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var.$gray;
+
+        @include resp-max('s') {
+            font-size: 1.1rem;
+        }
+    }
+
+    &__body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex: 1;
+    }
+
+    &__headline {
+        margin: 0;
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1.15;
+        color: #222;
+
+        @include resp-max('m') {
+            font-size: 2.4rem;
+        }
+
+        @include resp-max('s') {
+            font-size: 2rem;
+        }
+    }
+
+    &__detail {
+        margin: 0;
+        font-size: 1.4rem;
+        line-height: 1.4;
+        color: #555;
+
+        @include resp-max('s') {
+            font-size: 1.2rem;
+        }
+    }
+
+    &__icon {
+        flex-shrink: 0;
+        width: 5.6rem;
+        height: 5.6rem;
+        object-fit: contain;
+
+        @include resp-max('s') {
+            width: 4.8rem;
+            height: 4.8rem;
+        }
+    }
+
+    &--sun {
+        border-bottom-color: var.$orange;
+    }
+
+    &--moon {
+        border-bottom-color: #6b7a99;
+    }
+}

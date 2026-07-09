@@ -1,0 +1,133 @@
+@use '../../styles/variables.scss' as var;
+@use '../../styles/mixins' as *;
+
+.insightCard {
+    padding: 2.5rem 3rem;
+    border-radius: 20px;
+    box-shadow: 0 0 8px 0 rgba(black, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 14rem;
+
+    @include resp-max('m') {
+        padding: 2rem;
+        min-height: 12rem;
+    }
+
+    @include resp-max('s') {
+        padding: 1.5rem;
+        gap: 1rem;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+
+        @include resp-max('s') {
+            font-size: 1.1rem;
+        }
+    }
+
+    &__body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex: 1;
+    }
+
+    &__headline {
+        margin: 0;
+        font-size: 3.4rem;
+        font-weight: 700;
+        line-height: 1.15;
+
+        @include resp-max('m') {
+            font-size: 2.8rem;
+        }
+
+        @include resp-max('s') {
+            font-size: 2.2rem;
+        }
+    }
+
+    &__detail {
+        margin: 0;
+        font-size: 1.4rem;
+        line-height: 1.4;
+
+        @include resp-max('s') {
+            font-size: 1.2rem;
+        }
+    }
+
+    &__windIcon {
+        flex-shrink: 0;
+        opacity: 0.9;
+    }
+
+    &--green {
+        background-color: #2f9e52;
+    }
+
+    &--green &__title {
+        color: rgba(white, 0.85);
+    }
+
+    &--green &__headline {
+        color: white;
+    }
+
+    &--green &__detail {
+        color: rgba(white, 0.9);
+    }
+
+    &--green &__windIcon {
+        filter: brightness(0) invert(1);
+    }
+
+    &--yellow {
+        background-color: #f0b429;
+    }
+
+    &--yellow &__title {
+        color: rgba(#3d2e00, 0.75);
+    }
+
+    &--yellow &__headline {
+        color: #2a1f00;
+    }
+
+    &--yellow &__detail {
+        color: #3d2e00;
+    }
+
+    &--yellow &__windIcon {
+        filter: brightness(0) saturate(100%) invert(12%) sepia(30%)
+            saturate(1200%) hue-rotate(15deg) brightness(95%) contrast(95%);
+    }
+
+    &--red {
+        background-color: #d94848;
+    }
+
+    &--red &__title {
+        color: rgba(white, 0.85);
+    }
+
+    &--red &__headline {
+        color: white;
+    }
+
+    &--red &__detail {
+        color: rgba(white, 0.9);
+    }
+
+    &--red &__windIcon {
+        filter: brightness(0) invert(1);
+    }
+}

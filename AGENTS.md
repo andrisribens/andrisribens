@@ -59,7 +59,7 @@ Deploy runs `pnpm build`, which compiles SCSS via Next.js (and regenerates the `
 
 Copy `.env.example` to `.env.local` for local development.
 
-- `NEXT_PUBLIC_WEATHER_API_URL` — weather API base URL (e.g. Met.no compact forecast)
+- `NEXT_PUBLIC_WEATHER_API_URL` — Met.no `/complete` forecast URL (use complete, not compact, for full data)
 - `NEXT_PUBLIC_PLACE_API_URL` — geocoding API base URL with trailing `?` (e.g. Nominatim search)
 
 ## Cursor rules
