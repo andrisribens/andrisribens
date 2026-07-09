@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import styles from './ChartComponent.module.scss';
 
 import {
@@ -16,7 +16,7 @@ import {
   Filler,
 } from 'chart.js';
 import { Line, Bar } from 'react-chartjs-2';
-import { getChartScale } from '@/app/utilities/chartScale';
+import { buildYTicks, getChartScale } from '@/app/utilities/chartScale';
 
 interface WeatherChartProps {
   data: ChartData;
@@ -72,6 +72,11 @@ const ChartComponent = ({
   );
 
   const [arrowImage, setArrowImage] = useState<HTMLImageElement | null>(null);
+  const [yAxisLayout, setYAxisLayout] = useState({
+    top: 0,
+    height: 0,
+    plotHeight: 0,
+  });
 
   const activeChart = charts.find((chart) => chart.id === activeChartId);
 
@@ -81,32 +86,138 @@ const ChartComponent = ({
     img.onload = () => setArrowImage(img);
   }, []);
 
-  if (!activeChart) return null; // Prevent errors when `activeChart` is undefined
+  const scaleMeta = useMemo(() => {
+    if (!activeChart) {
+      return {
+        finalMin: 0,
+        finalMax: 1,
+        stepSize: 1,
+        yTicks: [1, 0] as number[],
+        pointCount: 0,
+      };
+    }
 
-  // Collect all values
-  const allValues = activeChart.data.datasets
-    .map((d: ChartDataset) => d.data)
-    .flat()
-    .filter(
-      (val: number | undefined): val is number => typeof val === 'number',
-    );
+    const allValues = activeChart.data.datasets
+      .map((d: ChartDataset) => d.data)
+      .flat()
+      .filter(
+        (val: number | undefined): val is number => typeof val === 'number',
+      );
 
-  const autoScale = getChartScale(activeChart.id, allValues);
+    const autoScale = getChartScale(activeChart.id, allValues);
 
-  const manualMin = activeChart.options?.scales?.y?.min;
-  const manualMax = activeChart.options?.scales?.y?.max;
-  const manualStep = activeChart.options?.scales?.y?.ticks?.stepSize;
+    const manualMin = activeChart.options?.scales?.y?.min;
+    const manualMax = activeChart.options?.scales?.y?.max;
+    const manualStep = activeChart.options?.scales?.y?.ticks?.stepSize;
 
-  const finalMin = typeof manualMin === 'number' ? manualMin : autoScale.min;
-  const finalMax = typeof manualMax === 'number' ? manualMax : autoScale.max;
-  const stepSize =
-    typeof manualStep === 'number' ? manualStep : autoScale.stepSize;
+    const finalMin =
+      typeof manualMin === 'number' ? manualMin : autoScale.min;
+    const finalMax =
+      typeof manualMax === 'number' ? manualMax : autoScale.max;
+    const stepSize =
+      typeof manualStep === 'number' ? manualStep : autoScale.stepSize;
+
+    return {
+      finalMin,
+      finalMax,
+      stepSize,
+      yTicks: buildYTicks(finalMin, finalMax, stepSize),
+      pointCount: activeChart.data.labels.length,
+    };
+  }, [activeChart]);
+
+  const { finalMin, finalMax, stepSize, yTicks, pointCount } = scaleMeta;
+
+  useEffect(() => {
+    setYAxisLayout({ top: 0, height: 0, plotHeight: 0 });
+  }, [activeChartId, finalMin, finalMax, pointCount]);
+
+  const yAxisSyncPlugin = useMemo(
+    () => ({
+      id: 'yAxisSync',
+      afterLayout(chart: ChartJS) {
+        const { top, height } = chart.chartArea;
+        const plotHeight = chart.height;
+
+        if (height <= 0 || plotHeight <= 0) return;
+
+        setYAxisLayout((prev) => {
+          if (
+            prev.top === top &&
+            prev.height === height &&
+            prev.plotHeight === plotHeight
+          ) {
+            return prev;
+          }
+
+          return { top, height, plotHeight };
+        });
+      },
+    }),
+    [],
+  );
+
+  const getTickTop = useCallback(
+    (tick: number) => {
+      const { top, height, plotHeight } = yAxisLayout;
+
+      if (height <= 0 || plotHeight <= 0 || finalMax === finalMin) {
+        return undefined;
+      }
+
+      const ratio = (finalMax - tick) / (finalMax - finalMin);
+      const yPx = top + ratio * height;
+
+      return `${(yPx / plotHeight) * 100}%`;
+    },
+    [yAxisLayout, finalMin, finalMax],
+  );
+
+  if (!activeChart) return null;
+
+  const renderYAxis = (side: 'left' | 'right') => (
+    <div
+      className={
+        side === 'right'
+          ? `${styles.chart__yAxis} ${styles['chart__yAxis--right']}`
+          : styles.chart__yAxis
+      }
+      aria-hidden
+    >
+      <div className={styles.chart__yAxisTicks}>
+        {yTicks.map((tick) => (
+          <span
+            key={`${side}-${tick}`}
+            className={styles.chart__yAxisTick}
+            style={{ top: getTickTop(tick) }}
+          >
+            {side === 'right' && (
+              <span className={styles.chart__yAxisTickMark} aria-hidden />
+            )}
+            {Number(tick).toFixed(0)}
+            {side === 'left' && (
+              <span className={styles.chart__yAxisTickMark} aria-hidden />
+            )}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 
   const mergedOptions = {
     ...activeChart.options,
     responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 4,
+        bottom: 0,
+        left: 0,
+        right: 0,
+      },
+    },
     plugins: {
-      legend: { position: 'top' },
+      legend: { display: false },
       tooltip: {
         padding: 15,
         displayColors: false,
@@ -117,34 +228,27 @@ const ChartComponent = ({
         min: finalMin,
         max: finalMax,
         ticks: {
-          stepSize: stepSize,
-          callback: (value: number | undefined) => Number(value).toFixed(0),
+          display: false,
+          stepSize,
         },
         grid: {
-          drawOnChartArea: false,
-        },
-        title: {
           display: true,
-          align: 'end',
-          text: activeChart.yAxisLabel,
+          drawOnChartArea: true,
+          color: 'rgba(128, 128, 128, 0.22)',
+        },
+        border: {
+          display: false,
         },
       },
-      yRight: {
-        type: 'linear',
-        position: 'right',
-        min: finalMin,
-        max: finalMax,
-        ticks: {
-          stepSize: stepSize,
-          callback: (value: number | undefined) => Number(value).toFixed(0),
-        },
+      x: {
         grid: {
           drawOnChartArea: false,
         },
-        title: {
-          display: true,
-          align: 'end',
-          text: activeChart.yAxisLabel,
+        border: {
+          color: 'rgba(128, 128, 128, 0.35)',
+        },
+        ticks: {
+          color: 'grey',
         },
       },
     },
@@ -197,6 +301,15 @@ const ChartComponent = ({
         }
       : undefined;
 
+  const chartPlugins = [
+    yAxisSyncPlugin,
+    ...(windDirectionPlugin ? [windDirectionPlugin] : []),
+  ];
+
+  const plotStyle = {
+    '--chart-point-count': pointCount,
+  } as React.CSSProperties;
+
   return (
     <div className={styles.chart}>
       {title && <h3 className={styles.chart__title}>{title}</h3>}
@@ -219,17 +332,30 @@ const ChartComponent = ({
           </button>
         ))}
       </div>
-      <div className={styles.chart__outerWrapper}>
-        <div className={styles.chart__innerWrapper}>
-          {activeChart.type === 'line' ? (
-            <Line data={activeChart.data} options={mergedOptions} />
-          ) : activeChart.type === 'bar' ? (
-            <Bar
-              data={activeChart.data}
-              options={mergedOptions}
-              plugins={windDirectionPlugin ? [windDirectionPlugin] : []}
-            />
-          ) : null}
+      <div className={styles.chart__plotArea}>
+        <div className={styles.chart__unitRow}>
+          <span className={styles.chart__yAxisUnit}>{activeChart.yAxisLabel}</span>
+        </div>
+        <div className={styles.chart__frame}>
+          {renderYAxis('left')}
+          <div className={styles.chart__outerWrapper}>
+            <div className={styles.chart__plot} style={plotStyle}>
+              {activeChart.type === 'line' ? (
+                <Line
+                  data={activeChart.data}
+                  options={mergedOptions}
+                  plugins={chartPlugins}
+                />
+              ) : activeChart.type === 'bar' ? (
+                <Bar
+                  data={activeChart.data}
+                  options={mergedOptions}
+                  plugins={chartPlugins}
+                />
+              ) : null}
+            </div>
+          </div>
+          {renderYAxis('right')}
         </div>
       </div>
     </div>

@@ -70,9 +70,10 @@ const WeatherFactsSection = ({
             const enriched = await reverseGeocode(latFromUrl, lonFromUrl);
             if (requestId !== requestIdRef.current) return;
             if (enriched) {
+              const selectedName = query.trim();
               onePlace = {
                 ...enriched,
-                name: enriched.name || query,
+                name: selectedName || enriched.name,
               };
             }
           } catch (reverseError) {

@@ -8,7 +8,6 @@ import { buildPlaceQuery, type RecentPlace } from '@/app/utilities/placeSearch';
 type RecentPlaceChipsProps = {
   places: RecentPlace[];
   title?: string;
-  onSelect?: (place: RecentPlace) => void;
   onRemove?: (place: RecentPlace) => void;
   compact?: boolean;
 };
@@ -16,7 +15,6 @@ type RecentPlaceChipsProps = {
 const RecentPlaceChips = ({
   places,
   title = 'Recent',
-  onSelect,
   onRemove,
   compact = false,
 }: RecentPlaceChipsProps) => {
@@ -43,7 +41,6 @@ const RecentPlaceChips = ({
               type="button"
               className={styles.recentPlaces__name}
               onClick={() => {
-                onSelect?.(place);
                 router.push(
                   buildPlaceQuery({
                     name: place.name,

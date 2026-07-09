@@ -40,11 +40,16 @@
         inset: 0;
         z-index: 10;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
+        padding-top: 4rem;
         background: rgba(255, 255, 255, 0.55);
         backdrop-filter: blur(3px);
         pointer-events: all;
+
+        .loader {
+            margin-top: 0;
+        }
     }
 
     &__heroError {

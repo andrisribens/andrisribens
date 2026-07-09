@@ -160,18 +160,19 @@ export function normalizeToPopulatedPlace(place: Place): Place | null {
 
 export function formatPlaceTownCountry(place: Place): string | null {
   const address = place.address;
+  const country = address?.country;
+
+  if (place.name && country) {
+    return `${place.name}, ${country}`;
+  }
+
   const townFromAddress = SETTLEMENT_ADDRESS_KEYS.map((key) => address?.[key]).find(
     Boolean,
   );
   const town = townFromAddress || place.name;
-  const country = address?.country;
 
   if (town && country) {
     return `${town}, ${country}`;
-  }
-
-  if (country && place.name) {
-    return `${place.name}, ${country}`;
   }
 
   const parts = place.display_name
@@ -347,12 +348,6 @@ export function addRecentPlace(
 
 export function rememberRecentPlace(place: Place): RecentPlace[] {
   const next = addRecentPlace(readRecentPlaces(), toRecentPlace(place));
-  writeRecentPlaces(next);
-  return next;
-}
-
-export function rememberRecentPlaceEntry(place: RecentPlace): RecentPlace[] {
-  const next = addRecentPlace(readRecentPlaces(), place);
   writeRecentPlaces(next);
   return next;
 }

@@ -39,7 +39,7 @@ const PlaceInputInner = () => {
   const [hasEdited, setHasEdited] = useState(false);
 
   const debouncedInput = useDebounce(inputValue, 300);
-  const { recentPlaces, rememberPlace, rememberEntry, removePlace, isLoaded } =
+  const { recentPlaces, rememberPlace, removePlace, isLoaded } =
     useRecentPlaces();
 
   const urlPlaceName = searchParams.get('place') ?? '';
@@ -195,7 +195,7 @@ const PlaceInputInner = () => {
     <div className="container">
       <div className={styles.placeInput} ref={rootRef}>
         <div className={styles.placeInput__input}>
-            <input
+          <input
               ref={inputRef}
               name="input-place"
               type="search"
@@ -302,7 +302,6 @@ const PlaceInputInner = () => {
           ) : isLoaded && showRecent ? (
             <RecentPlaceChips
               places={recentPlaces}
-              onSelect={rememberEntry}
               onRemove={removePlace}
               compact
             />

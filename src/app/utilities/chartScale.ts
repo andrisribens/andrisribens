@@ -130,3 +130,18 @@ export function getChartScale(
       return scaleFromData(numeric);
   }
 }
+
+export function buildYTicks(
+  min: number,
+  max: number,
+  stepSize?: number,
+): number[] {
+  const step = stepSize && stepSize > 0 ? stepSize : niceStep(max - min);
+  const ticks: number[] = [];
+
+  for (let value = min; value <= max + step * 0.001; value += step) {
+    ticks.push(Math.round(value * 1000) / 1000);
+  }
+
+  return ticks.reverse();
+}

@@ -260,6 +260,7 @@ const WeatherFactsClient = ({
   const weatherIconPath = `/img/weather-icons/${in1h?.summary?.symbol_code ?? 'clearsky_day'}.svg`;
 
   const blueColor = 'rgba(99, 190, 255, 0.7)';
+  const blueLightColor = 'rgba(170, 220, 255, 0.85)';
   const orangeColor = 'rgba(240, 188, 54, 0.7)';
   const blackColor = 'rgba(0,0,0, 0.7)';
 
@@ -298,8 +299,8 @@ const WeatherFactsClient = ({
           {
             label: 'Wind Speed',
             data: first24Windspeeds,
-            backgroundColor: blackColor,
-            borderColor: blackColor,
+            backgroundColor: blueLightColor,
+            borderColor: blueLightColor,
             borderWidth: 5,
             tension: 0.4,
             windDirections: first24WindDirections,
@@ -344,8 +345,8 @@ const WeatherFactsClient = ({
           {
             label: 'Air Pressure',
             data: first24Pressure,
-            backgroundColor: 'grey',
-            borderColor: 'grey',
+            backgroundColor: blueLightColor,
+            borderColor: blueLightColor,
             borderWidth: 5,
             tension: 0.4,
           },
@@ -459,8 +460,8 @@ const WeatherFactsClient = ({
           {
             label: 'Wind Speed',
             data: next24Windspeeds,
-            backgroundColor: blackColor,
-            borderColor: blackColor,
+            backgroundColor: blueLightColor,
+            borderColor: blueLightColor,
             borderWidth: 5,
             tension: 0.4,
             windDirections: next24WindDirections,
@@ -499,8 +500,8 @@ const WeatherFactsClient = ({
           {
             label: 'Air Pressure',
             data: next24Pressure,
-            backgroundColor: 'grey',
-            borderColor: 'grey',
+            backgroundColor: blueLightColor,
+            borderColor: blueLightColor,
             borderWidth: 5,
             tension: 0.4,
           },

@@ -5,7 +5,6 @@ import type { Place } from '@/app/utilities/actions';
 import {
   readRecentPlaces,
   rememberRecentPlace,
-  rememberRecentPlaceEntry,
   removeRecentPlace,
   type RecentPlace,
 } from '@/app/utilities/placeSearch';
@@ -23,13 +22,9 @@ export function useRecentPlaces() {
     setRecentPlaces(rememberRecentPlace(place));
   }, []);
 
-  const rememberEntry = useCallback((place: RecentPlace) => {
-    setRecentPlaces(rememberRecentPlaceEntry(place));
-  }, []);
-
   const removePlace = useCallback((place: RecentPlace) => {
     setRecentPlaces(removeRecentPlace(place));
   }, []);
 
-  return { recentPlaces, rememberPlace, rememberEntry, removePlace, isLoaded };
+  return { recentPlaces, rememberPlace, removePlace, isLoaded };
 }

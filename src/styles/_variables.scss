@@ -5,6 +5,7 @@ $gray: grey;
 $gray-light: rgba($gray, 0.6);
 $gray-lightest: rgba($gray, 0.3);
 $blue: rgb(99, 190, 255);
+$blue-light: color-mix(in srgb, $blue 45%, white);
 
 
 
