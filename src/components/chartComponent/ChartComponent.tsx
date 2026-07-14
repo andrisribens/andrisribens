@@ -323,7 +323,7 @@ const ChartComponent = ({
             onClick={() => setActiveChartId(chart.id)}
             className={
               chart.id === activeChartId
-                ? `${styles.chartbuttons__btn} + ${styles.active}`
+                ? `${styles.chartbuttons__btn} ${styles.active}`
                 : styles.chartbuttons__btn
             }
           >
