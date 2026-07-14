@@ -7,7 +7,7 @@ type DaylightCardVariant = 'sun' | 'moon';
 type DaylightCardProps = {
   title: string;
   headline: string;
-  detail?: string;
+  details?: string[];
   iconSrc: string;
   iconAlt?: string;
   variant?: DaylightCardVariant;
@@ -16,7 +16,7 @@ type DaylightCardProps = {
 const DaylightCard = ({
   title,
   headline,
-  detail,
+  details,
   iconSrc,
   iconAlt = '',
   variant = 'sun',
@@ -36,7 +36,15 @@ const DaylightCard = ({
           height={56}
         />
       </div>
-      {detail && <p className={styles.daylightCard__detail}>{detail}</p>}
+      {details && details.length > 0 && (
+        <div className={styles.daylightCard__details}>
+          {details.map((line) => (
+            <p key={line} className={styles.daylightCard__detail}>
+              {line}
+            </p>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -328,7 +328,7 @@ const ChartComponent = ({
             }
           >
             {chart.data.datasets[0].label}
-            <span>{chart.yAxisLabel}</span>
+            <span className={styles.chartbuttons__unit}>{chart.yAxisLabel}</span>
           </button>
         ))}
       </div>

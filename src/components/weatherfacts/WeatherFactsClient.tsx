@@ -130,18 +130,17 @@ const WeatherFactsClient = ({
   const nextSunEvent = getNextSunEvent(sunriseTime, sunsetTime);
   const sunriseLabel = formatPlaceTime(sunriseTime, placeTimezone);
   const sunsetLabel = formatPlaceTime(sunsetTime, placeTimezone);
-  const sunDetail = [sunriseLabel && `Sunrise ${sunriseLabel}`, sunsetLabel && `Sunset ${sunsetLabel}`]
-    .filter(Boolean)
-    .join(' · ');
+  const sunDetails = [
+    sunriseLabel && `Sunrise ${sunriseLabel}`,
+    sunsetLabel && `Sunset ${sunsetLabel}`,
+  ].filter((line): line is string => Boolean(line));
   const moonPhase = getMoonPhaseLabel(moonProperties?.moonphase);
   const moonriseLabel = formatPlaceTime(moonProperties?.moonrise?.time, placeTimezone);
   const moonsetLabel = formatPlaceTime(moonProperties?.moonset?.time, placeTimezone);
-  const moonDetail = [
+  const moonDetails = [
     moonriseLabel && `Moonrise ${moonriseLabel}`,
     moonsetLabel && `Moonset ${moonsetLabel}`,
-  ]
-    .filter(Boolean)
-    .join(' · ');
+  ].filter((line): line is string => Boolean(line));
   const showDaylight = Boolean(nextSunEvent || moonPhase);
 
   const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
@@ -624,6 +623,7 @@ const WeatherFactsClient = ({
                   alt="weather description icon"
                   width={240}
                   height={240}
+                  priority
                 />
               </div>
 
@@ -747,7 +747,7 @@ const WeatherFactsClient = ({
                       <DaylightCard
                         title="Sun"
                         headline={`${nextSunEvent.label} ${nextSunEvent.detail}`}
-                        detail={sunDetail || undefined}
+                        details={sunDetails.length > 0 ? sunDetails : undefined}
                         iconSrc={getSunEventIcon(nextSunEvent.label)}
                         iconAlt={nextSunEvent.label}
                         variant="sun"
@@ -758,7 +758,7 @@ const WeatherFactsClient = ({
                       <DaylightCard
                         title="Moon"
                         headline={moonPhase}
-                        detail={moonDetail || undefined}
+                        details={moonDetails.length > 0 ? moonDetails : undefined}
                         iconSrc={getMoonPhaseIcon(moonProperties?.moonphase)}
                         iconAlt={moonPhase}
                         variant="moon"

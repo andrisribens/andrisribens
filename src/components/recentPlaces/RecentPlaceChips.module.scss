@@ -12,7 +12,6 @@
     &__title {
         margin: 0 0 1rem;
         font-size: 1.4rem;
-        font-weight: 600;
         color: var.$gray;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -21,16 +20,16 @@
     &__list {
         display: flex;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 0.7rem;
     }
 
     &__chip {
-        border-radius: 2rem;
+        border-radius: 1rem;
         display: flex;
         align-items: center;
         gap: 1rem;
         background-color: color-mix(in srgb, var.$orange 35%, white);
-        padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+        padding: 0.5rem 0.3rem 0.5rem 1rem;
         transition: background-color 0.2s;
 
         &:hover,

@@ -17,8 +17,9 @@
     }
 
     @include resp-max('s') {
-        padding: 1.5rem;
-        gap: 1rem;
+        position: relative;
+        padding: 1rem;
+        min-height: 11rem;
     }
 
     &__title {
@@ -31,6 +32,7 @@
 
         @include resp-max('s') {
             font-size: 1.1rem;
+            width: 100%;
         }
     }
 
@@ -40,6 +42,11 @@
         justify-content: space-between;
         gap: 1rem;
         flex: 1;
+
+        @include resp-max('s') {
+            display: block;
+            flex: 0;
+        }
     }
 
     &__headline {
@@ -54,7 +61,23 @@
         }
 
         @include resp-max('s') {
-            font-size: 2rem;
+            font-size: 1.7rem;
+            width: 100%;
+        }
+    }
+
+    &__details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+
+        @include resp-min('s') {
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        @include resp-max('s') {
+            margin-top: auto;
         }
     }
 
@@ -64,8 +87,14 @@
         line-height: 1.4;
         color: #555;
 
+        @include resp-min('s') {
+            &:not(:last-child)::after {
+                content: ' · ';
+            }
+        }
+
         @include resp-max('s') {
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
     }
 
@@ -76,8 +105,11 @@
         object-fit: contain;
 
         @include resp-max('s') {
-            width: 4.8rem;
-            height: 4.8rem;
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            width: 3.2rem;
+            height: 3.2rem;
         }
     }
 
