@@ -1,28 +1,36 @@
 import Script from 'next/script';
 import type { Metadata } from 'next';
+import { IBM_Plex_Mono } from 'next/font/google';
 import '../styles/globals.scss';
 import Footer from '../components/footer/Footer';
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? 'https://andrisribens.com';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'Andris Rībens website',
+  title: 'Andris Rībens',
   description:
-    'This is Andris Rībens personal website, where I showcase some of my personal projects.',
+    'Frontend developer — Weather Now and other product craft.',
   manifest: '/img/site.webmanifest',
   openGraph: {
-    title: 'Andris Rībens website',
+    title: 'Andris Rībens',
     description:
-      'This is Andris Rībens personal website, where I showcase some of my personal projects.',
+      'Frontend developer — Weather Now and other product craft.',
     url: '/',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Andris Rībens website',
+    title: 'Andris Rībens',
     description:
-      'This is Andris Rībens personal website, where I showcase some of my personal projects.',
+      'Frontend developer — Weather Now and other product craft.',
   },
 };
 
@@ -32,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={ibmPlexMono.variable}>
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-0J4LS936SG"
