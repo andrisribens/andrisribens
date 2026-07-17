@@ -110,6 +110,7 @@
     align-items: start;
     row-gap: 3.2rem;
     padding: 3.2rem 0 3.2rem;
+    padding-top: calc(3.2rem + 40px);
     // Content gaps above do more of the work; keep enough room for last-link spotlight
     padding-bottom: calc(
       45dvh + env(safe-area-inset-bottom, 0px)
@@ -388,6 +389,10 @@
   font-size: 1.45rem;
   color: rgba(var.$ink, 0.35);
   transition: color 0.22s ease, transform 0.22s ease;
+
+  @include resp-max('m') {
+    font-size: 2rem;
+  }
 }
 
 .closer {
