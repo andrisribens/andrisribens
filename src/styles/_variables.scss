@@ -7,10 +7,10 @@ $gray-lightest: rgba($gray, 0.3);
 $blue: rgb(99, 190, 255);
 $blue-light: color-mix(in srgb, $blue 45%, white);
 
-// Craft homepage tokens (cool paper / ink — not flat white, not cream-AI)
-$paper: #e8ecef;
+// Craft homepage tokens (cool paper / ink — light, not flat white)
+$paper: #f4f6f8;
 $ink: #1a1d21;
-$rule: rgba($ink, 0.14);
+$rule: rgba($ink, 0.12);
 
 $bg: $white;
 $text: $black;

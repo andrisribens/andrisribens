@@ -6,13 +6,14 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 100dvh;
   color: var.$ink;
   background-color: var.$paper;
   overflow: hidden;
 
   @include resp-max('m') {
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -21,6 +22,10 @@
   inset: 0;
   pointer-events: none;
   z-index: 0;
+
+  @include resp-max('m') {
+    position: fixed;
+  }
 }
 
 .wash {
@@ -33,11 +38,11 @@
       transparent 52%
     ),
     radial-gradient(
-      70% 55% at 8% 92%,
-      color-mix(in srgb, var.$orange 8%, transparent) 0%,
-      transparent 48%
+      55% 40% at 12% 78%,
+      color-mix(in srgb, var.$orange 5%, transparent) 0%,
+      transparent 55%
     ),
-    linear-gradient(160deg, #f1f3f5 0%, var.$paper 50%, #dfe5ea 100%);
+    linear-gradient(160deg, #fafbfc 0%, var.$paper 55%, #eef1f4 100%);
 }
 
 .grid {
@@ -68,7 +73,7 @@
 .grain {
   position: absolute;
   inset: 0;
-  opacity: 0.28;
+  opacity: 0.2;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   background-size: 160px 160px;
@@ -78,36 +83,43 @@
   position: relative;
   z-index: 1;
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'intro contact'
+    'rule rule'
+    'lists lists'
+    'closer closer';
+  align-content: center;
+  align-items: end;
+  column-gap: 2.4rem;
+  row-gap: 5rem;
   width: min(92%, 88rem);
   margin: 0 auto;
   padding: clamp(2.4rem, 4vh, 5rem) 0 3.2rem;
 
   @include resp-max('m') {
-    justify-content: flex-start;
-    gap: 4rem;
-    padding: 3.2rem 0 5rem;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'intro'
+      'rule'
+      'lists'
+      'contact'
+      'closer';
+    align-content: start;
+    align-items: start;
+    row-gap: 3.2rem;
+    padding: 3.2rem 0 3.2rem;
+    // Content gaps above do more of the work; keep enough room for last-link spotlight
+    padding-bottom: calc(
+      45dvh + env(safe-area-inset-bottom, 0px)
+    );
   }
 }
 
 .intro {
+  grid-area: intro;
   max-width: 40rem;
-}
-
-.top {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 2.4rem;
-
-  @include resp-max('m') {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
-  }
 }
 
 .maker {
@@ -129,6 +141,7 @@
 }
 
 .contact {
+  grid-area: contact;
   position: relative;
   z-index: 0;
   display: flex;
@@ -140,11 +153,17 @@
   text-decoration: none;
   color: var.$ink;
   text-align: right;
-  flex-shrink: 0;
+  justify-self: end;
 
   @include resp-max('m') {
     align-items: flex-start;
     text-align: left;
+    justify-self: start;
+    margin-top: 2.8rem;
+
+    &:active::before {
+      transform: scaleX(1);
+    }
   }
 
   &::before {
@@ -194,6 +213,7 @@
 }
 
 .rule {
+  grid-area: rule;
   width: 0;
   height: 1px;
   background: linear-gradient(
@@ -215,9 +235,15 @@
 }
 
 .lists {
+  grid-area: lists;
   display: flex;
   flex-direction: column;
   gap: 4.8rem;
+
+  @include resp-max('m') {
+    gap: 3.6rem;
+    margin-top: 2.4rem;
+  }
 }
 
 .groupLabel {
@@ -289,6 +315,31 @@
     }
   }
 
+  @include resp-max('m') {
+    &.spotlight,
+    &:active {
+      transform: translateX(0.2rem);
+
+      &::before {
+        transform: scaleX(1);
+      }
+
+      .arrow {
+        color: var.$ink;
+        transform: translateX(0.2rem);
+      }
+    }
+
+    &.spotlight .name::after {
+      animation: homeLine 0.75s ease-in-out;
+    }
+
+    &:active .name::after {
+      width: 100%;
+      left: 0;
+    }
+  }
+
   &:focus-visible {
     outline: 2px solid var.$orange;
     outline-offset: 3px;
@@ -337,6 +388,26 @@
   transition: color 0.22s ease, transform 0.22s ease;
 }
 
+.closer {
+  grid-area: closer;
+  margin: 0;
+  padding-top: 1.2rem;
+  border-top: 1px solid var.$rule;
+  font-family: var.$mono-font;
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: rgba(var.$ink, 0.4);
+
+  @include resp-max('m') {
+    margin-top: 0.4rem;
+  }
+
+  @include resp-min('m') {
+    max-width: 48rem;
+  }
+}
+
 @keyframes homeLine {
   0% {
     width: 0;
@@ -364,13 +435,18 @@
     transition: none;
   }
 
-  .link:hover {
+  .link:hover,
+  .link.spotlight,
+  .link:active {
     transform: none;
   }
 
   .link:hover::before,
+  .link.spotlight::before,
+  .link:active::before,
   .link:focus-visible::before,
   .contact:hover::before,
+  .contact:active::before,
   .contact:focus-visible::before {
     transform: scaleX(1);
   }
@@ -379,7 +455,9 @@
     transition: none;
   }
 
-  .link:hover .name::after {
+  .link:hover .name::after,
+  .link.spotlight .name::after,
+  .link:active .name::after {
     animation: none;
     width: 100%;
     left: 0;
