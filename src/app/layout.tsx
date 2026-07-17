@@ -5,7 +5,7 @@ import '../styles/globals.scss';
 import Footer from '../components/footer/Footer';
 
 const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   weight: ['400', '500'],
   variable: '--font-mono',
   display: 'swap',
