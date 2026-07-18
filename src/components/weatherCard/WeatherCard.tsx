@@ -38,7 +38,9 @@ const WeatherCard = (cardInfo: CardInfo) => {
           )}
           <div className={styles.weatherCard__image}>
             <Image
-              style={{ transform: `rotate(${cardInfo.image.windDirection}deg` }}
+              style={{
+                transform: `rotate(${cardInfo.image.windDirection ?? 0}deg)`,
+              }}
               src={cardInfo.image.src}
               alt={cardInfo.image.alt}
               width={60}

@@ -121,6 +121,10 @@
 .intro {
   grid-area: intro;
   max-width: 40rem;
+
+  @include resp-max('m') {
+    padding-top: 10px;
+  }
 }
 
 .maker {

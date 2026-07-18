@@ -14,10 +14,12 @@
     &__plotArea {
         width: 100%;
 
+        // Full-bleed under container; parent .weather clips so iOS won't scroll sideways.
         @include resp-max('l') {
             width: 100vw;
-            max-width: 100vw;
+            max-width: 100%;
             margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
         }
     }
 
@@ -231,9 +233,11 @@
         gap: 0.5rem;
 
         font-size: 2.4rem;
+        color: var.$black;
         cursor: pointer;
         transition: all .3s;
         position: relative;
+        -webkit-tap-highlight-color: transparent;
 
         @include resp-max("xxl") {
             width: unset;
@@ -274,7 +278,8 @@
             }
         }
 
-        &:hover::after {
+        &:hover::after,
+        &:active::after {
             width: 100%;
         }
 

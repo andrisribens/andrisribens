@@ -160,6 +160,9 @@ const PlaceInputInner = () => {
 
     if (event.key === 'Enter') {
       event.preventDefault();
+      if (activeIndex >= 0 && suggestions[activeIndex]) {
+        selectPlace(suggestions[activeIndex]);
+      }
       return;
     }
 
@@ -174,6 +177,18 @@ const PlaceInputInner = () => {
       setIsOpen(true);
     }
   };
+
+  const clearInput = () => {
+    setInputValue('');
+    setHasEdited(false);
+    closeDropdown();
+    setSuggestions([]);
+    setHasSearched(false);
+    setError(null);
+    inputRef.current?.focus();
+  };
+
+  const showClear = inputValue.length > 0 && !isLoading;
 
   const showSuggestions =
     isOpen &&
@@ -246,6 +261,27 @@ const PlaceInputInner = () => {
               <span className={styles.placeInput__spinner} aria-hidden />
             )}
 
+            {showClear && (
+              <button
+                type="button"
+                className={styles.placeInput__clear}
+                onPointerDown={(event) => {
+                  // Keep focus on the input (iOS).
+                  event.preventDefault();
+                  clearInput();
+                }}
+                aria-label="Clear search"
+              >
+                <Image
+                  src="/img/close.svg"
+                  alt=""
+                  width={18}
+                  height={18}
+                  aria-hidden
+                />
+              </button>
+            )}
+
           {showSuggestions && (
             <div
               id={listboxId}
@@ -282,7 +318,11 @@ const PlaceInputInner = () => {
                         : styles.placeCard
                     }
                     onMouseEnter={() => setActiveIndex(index)}
-                    onClick={() => selectPlace(place)}
+                    onPointerDown={(event) => {
+                      // Prevent input blur from unmounting the list before selection (iOS).
+                      event.preventDefault();
+                      selectPlace(place);
+                    }}
                   >
                     <span className={styles.placeCard__name}>{place.name}</span>
                     <span className={styles.placeCard__meta}>

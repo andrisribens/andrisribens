@@ -38,7 +38,10 @@ type Project = {
 };
 
 const personal: Project[] = [
-  { name: 'Weather Now', href: '/weather' },
+  {
+    name: 'Weather Now',
+    href: '/weather?place=Amsterdam&lat=52.36760&lon=4.90414',
+  },
   {
     name: 'King of The Beach',
     href: 'https://kingofthebeach.me',
@@ -216,7 +219,7 @@ const HomePage = () => {
         />
 
         <div className={styles.lists}>
-          <nav className={styles.group} aria-label="Personal">
+          <nav className={styles.group} aria-label="my hobby tinkerings">
             <motion.p
               className={styles.groupLabel}
               custom={1}
@@ -224,7 +227,7 @@ const HomePage = () => {
               initial="hidden"
               animate="show"
             >
-              Personal
+              my hobby tinkerings
             </motion.p>
             <div className={styles.work}>
               {personal.map((project, i) => (
@@ -240,7 +243,7 @@ const HomePage = () => {
             </div>
           </nav>
 
-          <nav className={styles.group} aria-label="Work">
+          <nav className={styles.group} aria-label="few of the things i got paid for">
             <motion.p
               className={styles.groupLabel}
               custom={2}
@@ -248,7 +251,7 @@ const HomePage = () => {
               initial="hidden"
               animate="show"
             >
-              Work
+              few of the things i got paid for
             </motion.p>
             <div className={styles.work}>
               {clientWork.map((project, i) => (

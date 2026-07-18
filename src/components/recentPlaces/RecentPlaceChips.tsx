@@ -22,6 +22,16 @@ const RecentPlaceChips = ({
 
   if (!places.length) return null;
 
+  const selectPlace = (place: RecentPlace) => {
+    router.push(
+      buildPlaceQuery({
+        name: place.name,
+        lat: place.lat,
+        lon: place.lon,
+      }),
+    );
+  };
+
   return (
     <div
       className={
@@ -40,14 +50,9 @@ const RecentPlaceChips = ({
             <button
               type="button"
               className={styles.recentPlaces__name}
-              onClick={() => {
-                router.push(
-                  buildPlaceQuery({
-                    name: place.name,
-                    lat: place.lat,
-                    lon: place.lon,
-                  }),
-                );
+              onPointerDown={(event) => {
+                event.preventDefault();
+                selectPlace(place);
               }}
             >
               {place.name}
@@ -57,7 +62,10 @@ const RecentPlaceChips = ({
               <button
                 type="button"
                 className={styles.recentPlaces__close}
-                onClick={() => onRemove(place)}
+                onPointerDown={(event) => {
+                  event.preventDefault();
+                  onRemove(place);
+                }}
                 aria-label={`Remove ${place.name}`}
               >
                 <Image src="/img/close.svg" alt="" width={15} height={15} />

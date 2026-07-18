@@ -593,18 +593,17 @@ const WeatherFactsClient = ({
 
                 <motion.div
                   key={onePlace.name}
-                  initial={{ opacity: 0, x: -600 }}
+                  initial={{ opacity: 0, x: -48 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -900 }}
+                  exit={{ opacity: 0, x: -48 }}
                   className={
                     (air_temperature ?? 0) <= 0
                       ? `${styles.weather__city} ${styles.cold}`
                       : styles.weather__city
                   }
                   transition={{
-                    duration: 3,
+                    duration: 0.9,
                     ease: [0, 0.71, 0.2, 1.01],
-                    bounce: 0.25,
                   }}
                 >
                   <h2>{onePlace.name}</h2>

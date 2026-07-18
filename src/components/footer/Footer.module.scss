@@ -23,17 +23,20 @@
       text-decoration: none;
       transition: all 0.3s;
       position: relative;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      min-height: 4.4rem;
+      padding: 1rem 0.2rem;
 
       @include resp-max('s') {
-        font-size: 1.1rem;
+        font-size: 1.3rem;
       }
 
       &::after {
         content: '';
         position: absolute;
         left: 0;
-        top: calc(100% + 0.5rem);
+        top: calc(100% - 0.5rem);
         width: 0;
         height: 1px;
         background: linear-gradient(
@@ -48,6 +51,10 @@
         @include resp-min('m') {
           animation: line 1s ease-in-out;
         }
+      }
+
+      &:active {
+        opacity: 0.75;
       }
     }
   }

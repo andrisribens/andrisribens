@@ -208,6 +208,11 @@ const ChartComponent = ({
     ...activeChart.options,
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: 'index' as const,
+      intersect: false,
+      axis: 'x' as const,
+    },
     layout: {
       padding: {
         top: 4,
@@ -320,6 +325,7 @@ const ChartComponent = ({
         {charts.map((chart) => (
           <button
             key={chart.id}
+            type="button"
             onClick={() => setActiveChartId(chart.id)}
             className={
               chart.id === activeChartId
