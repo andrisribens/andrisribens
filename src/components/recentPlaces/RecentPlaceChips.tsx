@@ -9,6 +9,7 @@ type RecentPlaceChipsProps = {
   places: RecentPlace[];
   title?: string;
   onRemove?: (place: RecentPlace) => void;
+  onSelect?: (place: RecentPlace) => void;
   compact?: boolean;
 };
 
@@ -16,6 +17,7 @@ const RecentPlaceChips = ({
   places,
   title = 'Recent',
   onRemove,
+  onSelect,
   compact = false,
 }: RecentPlaceChipsProps) => {
   const router = useRouter();
@@ -23,6 +25,7 @@ const RecentPlaceChips = ({
   if (!places.length) return null;
 
   const selectPlace = (place: RecentPlace) => {
+    onSelect?.(place);
     router.push(
       buildPlaceQuery({
         name: place.name,
@@ -77,5 +80,35 @@ const RecentPlaceChips = ({
     </div>
   );
 };
+
+export function RecentPlaceChipsSkeleton({
+  compact = false,
+}: {
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={
+        compact
+          ? `${styles.recentPlaces} ${styles['recentPlaces--compact']}`
+          : styles.recentPlaces
+      }
+      aria-hidden
+    >
+      <p className={styles.recentPlaces__title}>Recent</p>
+      <div className={styles.recentPlaces__list}>
+        <div
+          className={`${styles.recentPlaces__chip} ${styles['recentPlaces__chip--skeleton']}`}
+        />
+        <div
+          className={`${styles.recentPlaces__chip} ${styles['recentPlaces__chip--skeleton']}`}
+        />
+        <div
+          className={`${styles.recentPlaces__chip} ${styles['recentPlaces__chip--skeleton']}`}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default RecentPlaceChips;

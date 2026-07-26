@@ -63,10 +63,6 @@ const clientWork: Project[] = [
   { name: 'Ekobaze', href: 'https://www.ekobaze.lv/' },
 ];
 
-function isExternalHref(href: string) {
-  return /^https?:\/\//i.test(href);
-}
-
 function ProjectLink({
   project,
   index,
@@ -81,7 +77,6 @@ function ProjectLink({
   motionIndex: number;
 }) {
   const label = String(index).padStart(2, '0');
-  const external = isExternalHref(project.href);
   const className = spotlight
     ? `${styles.link} ${styles.spotlight}`
     : styles.link;
@@ -90,9 +85,8 @@ function ProjectLink({
     <motion.a
       className={className}
       href={project.href}
-      {...(external
-        ? { target: '_blank', rel: 'noopener noreferrer' }
-        : {})}
+      target="_blank"
+      rel="noopener noreferrer"
       style={{ '--step': step } as React.CSSProperties}
       data-home-link
       custom={motionIndex}

@@ -43,7 +43,7 @@ const WeatherFactsSection = ({
   lon,
 }: WeatherFactsSectionProps) => {
   const [displayData, setDisplayData] = useState<DisplayState | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(() => Boolean(placeData.trim()));
   const [error, setError] = useState<string | null>(null);
   const requestIdRef = useRef(0);
 
@@ -134,16 +134,18 @@ const WeatherFactsSection = ({
     })();
   }, [placeData, lat, lon]);
 
-  if (!displayData && isLoading) {
+  if (!displayData && error) {
+    return <div className="container">{error}</div>;
+  }
+
+  // Place is set but data isn't ready yet — show loader (covers first paint
+  // before the fetch effect runs, when isLoading may still be true from init).
+  if (!displayData && placeData.trim()) {
     return (
       <div className="container">
         <Loader />
       </div>
     );
-  }
-
-  if (!displayData && error) {
-    return <div className="container">{error}</div>;
   }
 
   if (!displayData) return null;

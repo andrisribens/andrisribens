@@ -9,7 +9,9 @@ import {
   PLACE_SEARCH_LIMIT,
 } from '@/app/utilities/placeSearch';
 import { useRecentPlaces } from '@/hooks/useRecentPlaces';
-import RecentPlaceChips from '../recentPlaces/RecentPlaceChips';
+import RecentPlaceChips, {
+  RecentPlaceChipsSkeleton,
+} from '../recentPlaces/RecentPlaceChips';
 import styles from './PlaceInput.module.scss';
 import React, {
   Suspense,
@@ -21,6 +23,7 @@ import React, {
 } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import Loader from '@/app/weather/loading';
 
 const PlaceInputInner = () => {
   const router = useRouter();
@@ -39,8 +42,9 @@ const PlaceInputInner = () => {
   const [hasEdited, setHasEdited] = useState(false);
 
   const debouncedInput = useDebounce(inputValue, 300);
-  const { recentPlaces, rememberPlace, removePlace, isLoaded } =
+  const { recentPlaces, rememberPlace, bumpPlace, removePlace, isLoaded } =
     useRecentPlaces();
+  const restoredRef = useRef(false);
 
   const urlPlaceName = searchParams.get('place') ?? '';
 
@@ -48,6 +52,14 @@ const PlaceInputInner = () => {
     setIsOpen(false);
     setActiveIndex(-1);
   }, []);
+
+  useEffect(() => {
+    if (!isLoaded || restoredRef.current) return;
+    restoredRef.current = true;
+    if (!urlPlaceName && recentPlaces[0]) {
+      router.replace(buildPlaceQuery(recentPlaces[0]));
+    }
+  }, [isLoaded, urlPlaceName, recentPlaces, router]);
 
   useEffect(() => {
     setInputValue('');
@@ -206,7 +218,11 @@ const PlaceInputInner = () => {
     inputValue.trim().length < MIN_PLACE_QUERY_LENGTH &&
     !showSuggestions;
 
+  const isRestoring =
+    isLoaded && !urlPlaceName && recentPlaces.length > 0;
+
   return (
+    <>
     <div className="container">
       <div className={styles.placeInput} ref={rootRef}>
         <div className={styles.placeInput__input}>
@@ -339,16 +355,25 @@ const PlaceInputInner = () => {
             <p className={styles.placeInput__hint}>
               Type at least {MIN_PLACE_QUERY_LENGTH} characters
             </p>
-          ) : isLoaded && showRecent ? (
+          ) : !isLoaded ? (
+            <RecentPlaceChipsSkeleton compact />
+          ) : showRecent ? (
             <RecentPlaceChips
               places={recentPlaces}
               onRemove={removePlace}
+              onSelect={bumpPlace}
               compact
             />
           ) : null}
         </div>
       </div>
     </div>
+    {isRestoring && (
+      <div className="container">
+        <Loader />
+      </div>
+    )}
+    </>
   );
 };
 

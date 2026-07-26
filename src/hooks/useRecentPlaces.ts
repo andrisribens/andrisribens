@@ -1,11 +1,11 @@
-'use client';
-
 import { useCallback, useEffect, useState } from 'react';
 import type { Place } from '@/app/utilities/actions';
 import {
+  addRecentPlace,
   readRecentPlaces,
   rememberRecentPlace,
   removeRecentPlace,
+  writeRecentPlaces,
   type RecentPlace,
 } from '@/app/utilities/placeSearch';
 
@@ -22,9 +22,15 @@ export function useRecentPlaces() {
     setRecentPlaces(rememberRecentPlace(place));
   }, []);
 
+  const bumpPlace = useCallback((place: RecentPlace) => {
+    const next = addRecentPlace(readRecentPlaces(), place);
+    writeRecentPlaces(next);
+    setRecentPlaces(next);
+  }, []);
+
   const removePlace = useCallback((place: RecentPlace) => {
     setRecentPlaces(removeRecentPlace(place));
   }, []);
 
-  return { recentPlaces, rememberPlace, removePlace, isLoaded };
+  return { recentPlaces, rememberPlace, bumpPlace, removePlace, isLoaded };
 }

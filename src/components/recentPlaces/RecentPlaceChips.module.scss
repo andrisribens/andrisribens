@@ -12,10 +12,12 @@
 
     &__title {
         margin: 0 0 1rem;
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         color: var.$gray;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
+
+        @include resp-max('s') {
+            font-size: 1.2rem;
+        }
     }
 
     &__list {
@@ -34,10 +36,36 @@
         transition: background-color 0.2s;
         min-height: 4.4rem;
 
+        @include resp-max('m') {
+            min-height: 3.2rem;
+            padding: 0.1rem 0.1rem 0.1rem 0.8rem;
+        }
+
         &:hover,
         &:focus-within,
         &:active {
             background-color: color-mix(in srgb, var.$orange 55%, white);
+        }
+
+        &--skeleton {
+            width: 9rem;
+            pointer-events: none;
+            background-color: color-mix(in srgb, var.$gray 18%, white);
+            animation: recentChipPulse 1.2s ease-in-out infinite;
+
+            &:nth-child(2) {
+                width: 11rem;
+            }
+
+            &:nth-child(3) {
+                width: 7.5rem;
+            }
+
+            &:hover,
+            &:focus-within,
+            &:active {
+                background-color: color-mix(in srgb, var.$gray 18%, white);
+            }
         }
     }
 
@@ -54,6 +82,11 @@
         padding: 0.8rem 0.4rem 0.8rem 0;
         display: flex;
         align-items: center;
+
+        @include resp-max('m') {
+            min-height: 3.2rem;
+            padding: 0.4rem 0.3rem 0.4rem 0;
+        }
 
         @include resp-max('s') {
             font-size: 1.3rem;
@@ -72,9 +105,25 @@
         padding: 0;
         flex-shrink: 0;
 
+        @include resp-max('m') {
+            min-width: 3.2rem;
+            min-height: 3.2rem;
+        }
+
         &:hover img,
         &:active img {
             filter: invert(1);
         }
+    }
+}
+
+@keyframes recentChipPulse {
+    0%,
+    100% {
+        opacity: 0.55;
+    }
+
+    50% {
+        opacity: 1;
     }
 }
