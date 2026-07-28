@@ -89,7 +89,10 @@
 
         @include resp-min('s') {
             &:not(:last-child)::after {
-                content: ' · ';
+                // Keep ASCII in compiled CSS. A literal · makes Sass emit
+                // @charset, and Turbopack leaves a UTF-8 BOM that invalidates
+                // the first (base) .daylightCard rule.
+                content: #{"\" \\00B7 \""};
             }
         }
 
