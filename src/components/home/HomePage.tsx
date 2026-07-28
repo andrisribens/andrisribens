@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  useCallback,
   useEffect,
   useEffectEvent,
   useRef,
@@ -153,10 +152,10 @@ const HomePage = () => {
     setSpotlightHref(bestHref);
   });
 
-  const scheduleSpotlight = useCallback(() => {
+  const scheduleSpotlight = useEffectEvent(() => {
     cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(() => updateSpotlight());
-  }, [updateSpotlight]);
+  });
 
   useEffect(() => {
     const root = pageRef.current;
@@ -185,7 +184,7 @@ const HomePage = () => {
       mobileMq.removeEventListener('change', onMq);
       reduceMq.removeEventListener('change', onMq);
     };
-  }, [scheduleSpotlight]);
+  }, []);
 
   return (
     <div className={styles.page} ref={pageRef}>

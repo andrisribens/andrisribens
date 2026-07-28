@@ -21,7 +21,7 @@ const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
     console.log('Places: ', places);
   } catch (err) {
     console.error('Error fetching place data:', err);
-    return <div>Couldn't load place data right now. Please try again.</div>;
+    return <div>Couldn&apos;t load place data right now. Please try again.</div>;
   }
 
   if (!Array.isArray(places) || places.length === 0) {
@@ -45,7 +45,7 @@ const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
     console.error('Error fetching weather data:', err);
     return (
       <div>
-        Found <b>{onePlace?.name ?? 'the place'}</b>, but couldn't load weather
+        Found <b>{onePlace?.name ?? 'the place'}</b>, but couldn&apos;t load weather
         right now. Please try again.
       </div>
     );
