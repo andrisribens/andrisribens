@@ -25,7 +25,6 @@ export function useRecentPlaces() {
   const bumpPlace = useCallback((place: RecentPlace) => {
     const next = addRecentPlace(readRecentPlaces(), place);
     writeRecentPlaces(next);
-    setRecentPlaces(next);
   }, []);
 
   const removePlace = useCallback((place: RecentPlace) => {

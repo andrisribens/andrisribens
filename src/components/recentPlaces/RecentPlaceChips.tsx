@@ -3,18 +3,41 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './RecentPlaceChips.module.scss';
-import { buildPlaceQuery, type RecentPlace } from '@/app/utilities/placeSearch';
+import {
+  buildPlaceQuery,
+  isSameRecentPlace,
+  type RecentPlace,
+} from '@/app/utilities/placeSearch';
 
 type RecentPlaceChipsProps = {
   places: RecentPlace[];
+  activePlace?: Pick<RecentPlace, 'lat' | 'lon'> | null;
   title?: string;
   onRemove?: (place: RecentPlace) => void;
   onSelect?: (place: RecentPlace) => void;
   compact?: boolean;
 };
 
+function matchesActivePlace(
+  place: RecentPlace,
+  activePlace?: Pick<RecentPlace, 'lat' | 'lon'> | null,
+) {
+  if (!activePlace) return false;
+
+  return isSameRecentPlace(place, {
+    place_id: 0,
+    osm_id: 0,
+    name: '',
+    display_name: '',
+    lat: activePlace.lat,
+    lon: activePlace.lon,
+    addresstype: '',
+  });
+}
+
 const RecentPlaceChips = ({
   places,
+  activePlace = null,
   title = 'Recent',
   onRemove,
   onSelect,
@@ -24,8 +47,10 @@ const RecentPlaceChips = ({
 
   if (!places.length) return null;
 
-  const selectPlace = (place: RecentPlace) => {
+  const selectPlace = (place: RecentPlace, selected: boolean) => {
     onSelect?.(place);
+    if (selected) return;
+
     router.push(
       buildPlaceQuery({
         name: place.name,
@@ -45,37 +70,43 @@ const RecentPlaceChips = ({
     >
       <p className={styles.recentPlaces__title}>{title}</p>
       <div className={styles.recentPlaces__list}>
-        {places.map((place) => (
-          <div
-            className={styles.recentPlaces__chip}
-            key={`${place.osm_id}-${place.lat}-${place.lon}`}
-          >
-            <button
-              type="button"
-              className={styles.recentPlaces__name}
-              onPointerDown={(event) => {
-                event.preventDefault();
-                selectPlace(place);
-              }}
-            >
-              {place.name}
-            </button>
+        {places.map((place) => {
+          const selected = matchesActivePlace(place, activePlace);
 
-            {onRemove && (
+          return (
+            <div
+              className={
+                selected
+                  ? `${styles.recentPlaces__chip} ${styles['recentPlaces__chip--selected']}`
+                  : styles.recentPlaces__chip
+              }
+              key={`${place.osm_id}-${place.lat}-${place.lon}`}
+              aria-current={selected ? 'true' : undefined}
+            >
               <button
                 type="button"
-                className={styles.recentPlaces__close}
-                onPointerDown={(event) => {
-                  event.preventDefault();
-                  onRemove(place);
-                }}
-                aria-label={`Remove ${place.name}`}
+                className={styles.recentPlaces__name}
+                onClick={() => selectPlace(place, selected)}
               >
-                <Image src="/img/close.svg" alt="" width={15} height={15} />
+                {place.name}
               </button>
-            )}
-          </div>
-        ))}
+
+              {onRemove && (
+                <button
+                  type="button"
+                  className={styles.recentPlaces__close}
+                  onPointerDown={(event) => {
+                    event.preventDefault();
+                    onRemove(place);
+                  }}
+                  aria-label={`Remove ${place.name}`}
+                >
+                  <Image src="/img/close.svg" alt="" width={15} height={15} />
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

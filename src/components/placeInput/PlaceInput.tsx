@@ -48,6 +48,12 @@ const PlaceInputInner = () => {
   const restoredRef = useRef(false);
 
   const urlPlaceName = searchParams.get('place') ?? '';
+  const urlLat = searchParams.get('lat') ?? '';
+  const urlLon = searchParams.get('lon') ?? '';
+  const activePlace =
+    urlPlaceName && urlLat && urlLon
+      ? { lat: urlLat, lon: urlLon }
+      : null;
 
   const closeDropdown = useCallback(() => {
     setIsOpen(false);
@@ -362,6 +368,7 @@ const PlaceInputInner = () => {
           ) : showRecent ? (
             <RecentPlaceChips
               places={recentPlaces}
+              activePlace={activePlace}
               onRemove={removePlace}
               onSelect={bumpPlace}
               compact
