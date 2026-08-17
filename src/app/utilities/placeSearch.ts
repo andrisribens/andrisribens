@@ -3,8 +3,14 @@ import { formatPlaceType } from './sunriseTypes';
 
 export const RECENT_PLACES_KEY = 'searched-places';
 export const MIN_PLACE_QUERY_LENGTH = 2;
+export const MAX_PLACE_QUERY_LENGTH = 100;
+export const MAX_PLACE_NAME_LENGTH = 120;
 export const PLACE_SEARCH_LIMIT = 8;
 export const RECENT_PLACES_MAX = 8;
+export const LAT_MIN = -90;
+export const LAT_MAX = 90;
+export const LON_MIN = -180;
+export const LON_MAX = 180;
 
 const POPULATED_PLACE_TYPES = new Set([
   'city',
@@ -86,19 +92,65 @@ export type RecentPlace = Pick<
   'place_id' | 'osm_id' | 'name' | 'display_name' | 'lat' | 'lon' | 'addresstype'
 >;
 
+function toFiniteNumber(value: unknown): number | null {
+  if (typeof value === 'number') {
+    return Number.isFinite(value) ? value : null;
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    const n = Number.parseFloat(value);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  return null;
+}
+
+function roundCoord(value: number): number {
+  return Number.parseFloat(value.toFixed(5));
+}
+
+export function toLatitude(value: unknown): number | null {
+  const n = toFiniteNumber(value);
+  if (n === null || n < LAT_MIN || n > LAT_MAX) return null;
+  return roundCoord(n);
+}
+
+export function toLongitude(value: unknown): number | null {
+  const n = toFiniteNumber(value);
+  if (n === null || n < LON_MIN || n > LON_MAX) return null;
+  return roundCoord(n);
+}
+
 export function parseCoord(value?: string | string[] | null): number | null {
   const raw = Array.isArray(value) ? value[0] : value;
-  if (!raw) return null;
-  const n = Number.parseFloat(raw);
-  if (!Number.isFinite(n)) return null;
-  return Number.parseFloat(n.toFixed(5));
+  const n = toFiniteNumber(raw);
+  if (n === null) return null;
+  return roundCoord(n);
+}
+
+export function parseLatitude(value?: string | string[] | null): number | null {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return toLatitude(raw);
+}
+
+export function parseLongitude(value?: string | string[] | null): number | null {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return toLongitude(raw);
+}
+
+export function normalizePlaceQuery(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const query = value.trim();
+  if (query.length < MIN_PLACE_QUERY_LENGTH) return null;
+  if (query.length > MAX_PLACE_QUERY_LENGTH) return null;
+  return query;
 }
 
 export function buildPlaceQuery(
   place: Pick<Place, 'name' | 'lat' | 'lon'>,
 ): string {
   const params = new URLSearchParams({
-    place: place.name,
+    place: place.name.slice(0, MAX_PLACE_NAME_LENGTH),
     lat: place.lat,
     lon: place.lon,
   });
@@ -223,17 +275,19 @@ export function buildMinimalPlace(
 }
 
 export function normalizeCoordString(value: string | number): string {
-  const n = typeof value === 'number' ? value : Number.parseFloat(value);
-  if (!Number.isFinite(n)) return String(value);
-  return n.toFixed(5);
+  const n = toFiniteNumber(value);
+  if (n === null) return '';
+  return roundCoord(n).toFixed(5);
 }
 
 export function toRecentPlace(place: Place): RecentPlace {
   return {
     place_id: place.place_id,
     osm_id: place.osm_id,
-    name: place.name.trim(),
-    display_name: place.display_name,
+    name: place.name.trim().slice(0, MAX_PLACE_NAME_LENGTH),
+    display_name: (place.display_name || place.name)
+      .trim()
+      .slice(0, MAX_PLACE_NAME_LENGTH * 2),
     lat: normalizeCoordString(place.lat),
     lon: normalizeCoordString(place.lon),
     addresstype: place.addresstype,
@@ -293,16 +347,31 @@ export function dedupeRecentPlaces(places: RecentPlace[]): RecentPlace[] {
   return result.slice(0, RECENT_PLACES_MAX);
 }
 
+function isRecentPlaceRecord(value: unknown): value is RecentPlace {
+  if (!value || typeof value !== 'object') return false;
+
+  const place = value as Record<string, unknown>;
+  return (
+    typeof place.name === 'string' &&
+    typeof place.lat === 'string' &&
+    typeof place.lon === 'string' &&
+    toLatitude(place.lat) !== null &&
+    toLongitude(place.lon) !== null
+  );
+}
+
 export function readRecentPlaces(): RecentPlace[] {
   if (typeof window === 'undefined') return [];
 
   try {
     const stored = localStorage.getItem(RECENT_PLACES_KEY);
     if (!stored) return [];
-    const parsed = JSON.parse(stored) as RecentPlace[];
+    const parsed = JSON.parse(stored) as unknown;
     if (!Array.isArray(parsed)) return [];
 
-    const deduped = dedupeRecentPlaces(parsed);
+    const deduped = dedupeRecentPlaces(
+      parsed.filter(isRecentPlaceRecord).slice(0, RECENT_PLACES_MAX * 4),
+    );
     writeRecentPlaces(deduped);
     return deduped;
   } catch {
@@ -339,6 +408,10 @@ export function addRecentPlace(
     display_name: place.display_name,
     boundingbox: ['0', '0', '0', '0'],
   });
+
+  if (toLatitude(normalized.lat) === null || toLongitude(normalized.lon) === null) {
+    return dedupeRecentPlaces(places);
+  }
   const filtered = places.filter((item) => !isSameRecentPlace(item, normalized));
   const existing = places.find((item) => isSameRecentPlace(item, normalized));
   const merged = existing ? mergeRecentPlace(existing, normalized) : normalized;

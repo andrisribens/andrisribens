@@ -1,24 +1,15 @@
-'use server';
-
 import { getPlaceFree, getWeather } from '@/app/utilities/actions';
+import { toLatitude, toLongitude } from '@/app/utilities/placeSearch';
 import React from 'react';
 import WeatherFactsClient from './WeatherFactsClient';
-
-function toTwoDecimalsNumber(value: string): number | null {
-  const n = Number.parseFloat(value);
-  if (!Number.isFinite(n)) return null;
-  return Number.parseFloat(n.toFixed(2));
-}
 
 const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
   const query = (placeData ?? '').trim();
   if (!query) return null;
 
-  // 1) Place lookup (guard against network errors / rate limits)
-  let places: any[] = [];
+  let places: Awaited<ReturnType<typeof getPlaceFree>> = [];
   try {
     places = await getPlaceFree(query);
-    console.log('Places: ', places);
   } catch (err) {
     console.error('Error fetching place data:', err);
     return <div>Couldn&apos;t load place data right now. Please try again.</div>;
@@ -29,16 +20,15 @@ const WeatherFactsServer = async ({ placeData }: { placeData: string }) => {
   }
 
   const onePlace = places[0];
-  const latNum = toTwoDecimalsNumber(onePlace?.lat);
-  const lonNum = toTwoDecimalsNumber(onePlace?.lon);
+  const latNum = toLatitude(onePlace?.lat);
+  const lonNum = toLongitude(onePlace?.lon);
 
   if (latNum === null || lonNum === null) {
-    console.error('Invalid coordinates from place API:', onePlace);
+    console.error('Invalid coordinates from place API');
     return <div>Found a place, but its coordinates look invalid.</div>;
   }
 
-  // 2) Weather lookup (separate error handling)
-  let weather: any;
+  let weather: Awaited<ReturnType<typeof getWeather>>;
   try {
     weather = await getWeather(latNum, lonNum);
   } catch (err) {

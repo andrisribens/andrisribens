@@ -22,6 +22,7 @@ import {
   getUvChartColor,
   getWindFeelLabel,
   getWindLevel,
+  weatherIconSrc,
 } from '@/app/utilities/weatherTypes';
 import type { DaylightData, Place } from '@/app/utilities/actions';
 import {
@@ -256,7 +257,7 @@ const WeatherFactsClient = ({
   const uvPointColors = first24Uv.map((uv) => getUvChartColor(uv));
   const nextUvPointColors = next24Uv.map((uv) => getUvChartColor(uv));
 
-  const weatherIconPath = `/img/weather-icons/${in1h?.summary?.symbol_code ?? 'clearsky_day'}.svg`;
+  const weatherIconPath = weatherIconSrc(in1h?.summary?.symbol_code);
 
   const blueColor = 'rgba(99, 190, 255, 0.7)';
   const blueLightColor = 'rgba(170, 220, 255, 0.85)';
@@ -791,7 +792,7 @@ const WeatherFactsClient = ({
 
               <div className={styles.weather__nextlist}>
                 {nextData.map(([key, value]) => {
-                  const symbolCode = value.summary?.symbol_code ?? 'n/a';
+                  const symbolCode = value.summary?.symbol_code;
                   const details = value.details;
 
                   return (
@@ -801,8 +802,8 @@ const WeatherFactsClient = ({
                         .replace(/_/g, ' ')
                         .replace(/^./, (char) => char.toUpperCase())}
                       image={{
-                        src: `/img/weather-icons/${symbolCode}.svg`,
-                        alt: symbolCode,
+                        src: weatherIconSrc(symbolCode),
+                        alt: symbolCode ?? 'weather',
                       }}
                       precipitation={details?.precipitation_amount}
                       precipitationMin={details?.precipitation_amount_min}

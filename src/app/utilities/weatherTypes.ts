@@ -144,3 +144,13 @@ export function getUvLabel(index: number): string {
 export function formatCoord(value: number): string {
   return value.toFixed(2);
 }
+
+const WEATHER_SYMBOL_RE = /^[a-z0-9_]+$/;
+
+export function weatherIconSrc(symbolCode?: string): string {
+  const code =
+    symbolCode && WEATHER_SYMBOL_RE.test(symbolCode)
+      ? symbolCode
+      : 'clearsky_day';
+  return `/img/weather-icons/${code}.svg`;
+}

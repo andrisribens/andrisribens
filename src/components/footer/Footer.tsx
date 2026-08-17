@@ -15,7 +15,11 @@ const Footer = () => {
   return (
     <footer className={styles.footer}>
       <div className={styles.footer__links}>
-        <Link target="_blank" href="https://www.kingofthebeach.me">
+        <Link
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.kingofthebeach.me"
+        >
           King of The Beach
         </Link>
         <Link href="/" rel="author">

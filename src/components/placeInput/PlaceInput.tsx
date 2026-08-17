@@ -6,6 +6,7 @@ import {
   buildPlaceQuery,
   formatPlaceSuggestionSubtitle,
   MIN_PLACE_QUERY_LENGTH,
+  MAX_PLACE_QUERY_LENGTH,
   PLACE_SEARCH_LIMIT,
 } from '@/app/utilities/placeSearch';
 import { useRecentPlaces } from '@/hooks/useRecentPlaces';
@@ -262,6 +263,7 @@ const PlaceInputInner = () => {
               onKeyDown={handleKeyDown}
               placeholder="Search city or place"
               autoComplete="off"
+              maxLength={MAX_PLACE_QUERY_LENGTH}
             />
 
             <Image

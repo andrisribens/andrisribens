@@ -2,7 +2,15 @@
 
 import {
   filterPopulatedPlaces,
+  LAT_MAX,
+  LAT_MIN,
+  LON_MAX,
+  LON_MIN,
+  normalizePlaceQuery,
   normalizeToPopulatedPlace,
+  PLACE_SEARCH_LIMIT,
+  toLatitude,
+  toLongitude,
 } from './placeSearch';
 import type { WeatherData } from './weatherTypes';
 import type { DaylightData, SunriseFeature, MoonTimesProperties, SunTimesProperties } from './sunriseTypes';
@@ -16,37 +24,126 @@ export type {
 
 export type { DaylightData } from './sunriseTypes';
 
+const FETCH_TIMEOUT_MS = 8_000;
+const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const UTC_OFFSET_RE = /^[+-](?:0\d|1[0-4]):[0-5]\d$/;
+
+const ALLOWED_API_HOSTS = new Set([
+  'api.met.no',
+  'nominatim.openstreetmap.org',
+]);
+
+const WEATHER_API_FALLBACK =
+  'https://api.met.no/weatherapi/locationforecast/2.0/complete';
+const PLACE_SEARCH_API_FALLBACK =
+  'https://nominatim.openstreetmap.org/search';
+const PLACE_REVERSE_API =
+  'https://nominatim.openstreetmap.org/reverse';
+const SUNRISE_API_BASE = 'https://api.met.no/weatherapi/sunrise/3.0';
+
+const METNO_HEADERS = {
+  'User-Agent': 'andrisribens.com (andris.ribens@gmail.com)',
+};
+
+const NOMINATIM_HEADERS = {
+  'User-Agent': 'andrisribens.com (andris.ribens@gmail.com)',
+};
+
+function requireHttpsApiUrl(raw: string): URL {
+  let url: URL;
+  try {
+    url = new URL(raw);
+  } catch {
+    throw new Error('Invalid API URL');
+  }
+
+  if (url.protocol !== 'https:' || !ALLOWED_API_HOSTS.has(url.hostname)) {
+    throw new Error('Invalid API URL');
+  }
+
+  return url;
+}
+
+function weatherApiUrl(): URL {
+  return requireHttpsApiUrl(
+    process.env.NEXT_PUBLIC_WEATHER_API_URL || WEATHER_API_FALLBACK,
+  );
+}
+
+function placeSearchApiUrl(): URL {
+  return requireHttpsApiUrl(
+    process.env.NEXT_PUBLIC_PLACE_API_URL || PLACE_SEARCH_API_FALLBACK,
+  );
+}
+
+function requireCoordinates(
+  lat: unknown,
+  lon: unknown,
+): { lat: number; lon: number } {
+  const parsedLat = toLatitude(lat);
+  const parsedLon = toLongitude(lon);
+
+  if (parsedLat === null || parsedLon === null) {
+    throw new Error(
+      `Coordinates must be finite numbers (lat ${LAT_MIN}–${LAT_MAX}, lon ${LON_MIN}–${LON_MAX})`,
+    );
+  }
+
+  return { lat: parsedLat, lon: parsedLon };
+}
+
+function requireIsoDate(value: unknown): string {
+  if (typeof value !== 'string' || !ISO_DATE_RE.test(value)) {
+    throw new Error('Invalid date');
+  }
+  return value;
+}
+
+function requireUtcOffset(value: unknown): string {
+  if (typeof value !== 'string' || !UTC_OFFSET_RE.test(value)) {
+    throw new Error('Invalid timezone offset');
+  }
+  return value;
+}
+
+function clampSearchLimit(limit: unknown): number {
+  const n =
+    typeof limit === 'number' && Number.isFinite(limit)
+      ? Math.floor(limit)
+      : PLACE_SEARCH_LIMIT;
+  return Math.min(Math.max(n, 1), PLACE_SEARCH_LIMIT);
+}
+
+async function fetchJson(url: URL, headers: Record<string, string>) {
+  const res = await fetch(url, {
+    cache: 'no-store',
+    headers,
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Request failed: ${res.status}`);
+  }
+
+  return res.json();
+}
+
 export async function getWeather(
   lat: number,
   long: number,
 ): Promise<WeatherData> {
-  const url = `${process.env.NEXT_PUBLIC_WEATHER_API_URL}?lat=${lat}&lon=${long}`;
+  const coords = requireCoordinates(lat, long);
+  const url = weatherApiUrl();
+  url.searchParams.set('lat', String(coords.lat));
+  url.searchParams.set('lon', String(coords.lon));
 
   try {
-    const res = await fetch(url, {
-      cache: 'no-store',
-      headers: {
-        'User-Agent': 'andrisribens.com (andris.ribens@gmail.com)',
-      },
-    });
-
-    const raw = await res.text();
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch weather data: ${res.status}`);
-    }
-
-    const weather = JSON.parse(raw) as WeatherData;
-    return weather;
+    return (await fetchJson(url, METNO_HEADERS)) as WeatherData;
   } catch (error) {
     console.error('Error fetching weather data:', error);
     throw error;
   }
 }
-
-const METNO_HEADERS = {
-  'User-Agent': 'andrisribens.com (andris.ribens@gmail.com)',
-};
 
 export async function getDaylightData(
   lat: number,
@@ -54,30 +151,26 @@ export async function getDaylightData(
   date: string,
   offset: string,
 ): Promise<DaylightData> {
-  const base = 'https://api.met.no/weatherapi/sunrise/3.0';
-  const params = `lat=${lat}&lon=${lon}&date=${date}&offset=${encodeURIComponent(offset)}`;
+  const coords = requireCoordinates(lat, lon);
+  const safeDate = requireIsoDate(date);
+  const safeOffset = requireUtcOffset(offset);
+
+  const sunUrl = requireHttpsApiUrl(`${SUNRISE_API_BASE}/sun`);
+  const moonUrl = requireHttpsApiUrl(`${SUNRISE_API_BASE}/moon`);
+
+  for (const url of [sunUrl, moonUrl]) {
+    url.searchParams.set('lat', String(coords.lat));
+    url.searchParams.set('lon', String(coords.lon));
+    url.searchParams.set('date', safeDate);
+    url.searchParams.set('offset', safeOffset);
+  }
 
   try {
-    const [sunRes, moonRes] = await Promise.all([
-      fetch(`${base}/sun?${params}`, {
-        cache: 'no-store',
-        headers: METNO_HEADERS,
-      }),
-      fetch(`${base}/moon?${params}`, {
-        cache: 'no-store',
-        headers: METNO_HEADERS,
-      }),
-    ]);
-
-    if (!sunRes.ok || !moonRes.ok) {
-      throw new Error(
-        `Failed to fetch daylight data: sun ${sunRes.status}, moon ${moonRes.status}`,
-      );
-    }
-
     const [sun, moon] = await Promise.all([
-      sunRes.json() as Promise<SunriseFeature<SunTimesProperties>>,
-      moonRes.json() as Promise<SunriseFeature<MoonTimesProperties>>,
+      fetchJson(sunUrl, METNO_HEADERS) as Promise<SunriseFeature<SunTimesProperties>>,
+      fetchJson(moonUrl, METNO_HEADERS) as Promise<
+        SunriseFeature<MoonTimesProperties>
+      >,
     ]);
 
     return { sun, moon };
@@ -86,8 +179,6 @@ export async function getDaylightData(
     throw error;
   }
 }
-
-// Get Place data
 
 export interface Place {
   place_id: number;
@@ -107,35 +198,29 @@ export interface Place {
   address?: Record<string, string>;
 }
 
-const NOMINATIM_HEADERS = {
-  'User-Agent': 'andrisribens.com (andris.ribens@gmail.com)',
-};
-
 export async function searchPlaces(
   placeQuery: string,
   limit = 8,
 ): Promise<Place[]> {
-  const fetchLimit = Math.max(limit * 3, 15);
-  const url =
-    `${process.env.NEXT_PUBLIC_PLACE_API_URL}` +
-    `q=${encodeURIComponent(placeQuery)}` +
-    `&format=json` +
-    `&limit=${fetchLimit}` +
-    `&addressdetails=1` +
-    `&accept-language=en`;
+  const query = normalizePlaceQuery(placeQuery);
+  if (!query) {
+    return [];
+  }
+
+  const safeLimit = clampSearchLimit(limit);
+  const fetchLimit = Math.max(safeLimit * 3, 15);
+  const url = placeSearchApiUrl();
+  url.searchParams.set('q', query);
+  url.searchParams.set('format', 'json');
+  url.searchParams.set('limit', String(fetchLimit));
+  url.searchParams.set('addressdetails', '1');
+  url.searchParams.set('accept-language', 'en');
 
   try {
-    const res = await fetch(url, {
-      cache: 'no-store',
-      headers: NOMINATIM_HEADERS,
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch place data: ${res.status}`);
-    }
-
-    const places = filterPopulatedPlaces((await res.json()) as Place[]);
-    return places.slice(0, limit);
+    const places = filterPopulatedPlaces(
+      (await fetchJson(url, NOMINATIM_HEADERS)) as Place[],
+    );
+    return places.slice(0, safeLimit);
   } catch (error) {
     console.error('Error fetching place data:', error);
     throw error;
@@ -146,21 +231,15 @@ export async function reverseGeocode(
   lat: number,
   lon: number,
 ): Promise<Place | null> {
-  const url =
-    `https://nominatim.openstreetmap.org/reverse` +
-    `?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
+  const coords = requireCoordinates(lat, lon);
+  const url = requireHttpsApiUrl(PLACE_REVERSE_API);
+  url.searchParams.set('lat', String(coords.lat));
+  url.searchParams.set('lon', String(coords.lon));
+  url.searchParams.set('format', 'json');
+  url.searchParams.set('addressdetails', '1');
 
   try {
-    const res = await fetch(url, {
-      cache: 'no-store',
-      headers: NOMINATIM_HEADERS,
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to reverse geocode: ${res.status}`);
-    }
-
-    const data = (await res.json()) as Place;
+    const data = (await fetchJson(url, NOMINATIM_HEADERS)) as Place;
     if (!data?.lat || !data?.lon) return null;
     return normalizeToPopulatedPlace(data);
   } catch (error) {

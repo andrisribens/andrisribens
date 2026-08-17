@@ -14,7 +14,7 @@ import {
   getPlaceTimezone,
   getPlaceTimezoneOffset,
 } from '@/app/utilities/chartLabels';
-import { buildMinimalPlace } from '@/app/utilities/placeSearch';
+import { buildMinimalPlace, toLatitude, toLongitude } from '@/app/utilities/placeSearch';
 import type { WeatherData } from '@/app/utilities/weatherTypes';
 import Loader from '@/app/weather/loading';
 import WeatherFactsClient from './WeatherFactsClient';
@@ -24,12 +24,6 @@ type DisplayState = {
   onePlace: Place;
   daylight: DaylightData | null;
 };
-
-function toTwoDecimalsNumber(value: string | number): number | null {
-  const n = typeof value === 'number' ? value : Number.parseFloat(value);
-  if (!Number.isFinite(n)) return null;
-  return Number.parseFloat(n.toFixed(2));
-}
 
 type WeatherFactsSectionProps = {
   placeData: string;
@@ -57,8 +51,8 @@ const WeatherFactsSection = ({
 
     (async () => {
       try {
-        const latFromUrl = lat != null ? toTwoDecimalsNumber(lat) : null;
-        const lonFromUrl = lon != null ? toTwoDecimalsNumber(lon) : null;
+        const latFromUrl = lat != null ? toLatitude(lat) : null;
+        const lonFromUrl = lon != null ? toLongitude(lon) : null;
         const hasCoords = latFromUrl !== null && lonFromUrl !== null;
 
         let onePlace: Place;
@@ -92,8 +86,8 @@ const WeatherFactsSection = ({
           onePlace = places[0];
         }
 
-        const latNum = toTwoDecimalsNumber(onePlace.lat);
-        const lonNum = toTwoDecimalsNumber(onePlace.lon);
+        const latNum = toLatitude(onePlace.lat);
+        const lonNum = toLongitude(onePlace.lon);
 
         if (latNum === null || lonNum === null) {
           setError('Found a place, but its coordinates look invalid.');

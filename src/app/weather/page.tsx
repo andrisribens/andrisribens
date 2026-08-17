@@ -1,7 +1,7 @@
 import PlaceInput from '@/components/placeInput/PlaceInput';
 import WeatherFactsSection from '@/components/weatherfacts/WeatherFactsSection';
 import WeatherTop from '@/components/weatherTop/WeatherTop';
-import { parseCoord } from '@/app/utilities/placeSearch';
+import { MAX_PLACE_QUERY_LENGTH, parseLatitude, parseLongitude } from '@/app/utilities/placeSearch';
 
 interface PageProps {
   searchParams: Promise<{
@@ -17,9 +17,10 @@ export const dynamic = 'force-dynamic';
 export default async function Weather({ searchParams }: PageProps) {
   const params = await searchParams;
   const place = params?.place;
-  const placeData = Array.isArray(place) ? (place[0] ?? '') : (place ?? '');
-  const lat = parseCoord(params.lat);
-  const lon = parseCoord(params.lon);
+  const rawPlace = Array.isArray(place) ? (place[0] ?? '') : (place ?? '');
+  const placeData = rawPlace.slice(0, MAX_PLACE_QUERY_LENGTH);
+  const lat = parseLatitude(params.lat);
+  const lon = parseLongitude(params.lon);
 
   return (
     <>
