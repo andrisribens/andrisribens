@@ -181,22 +181,21 @@
 }
 
 .chartbuttons {
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
     gap: 3rem;
     margin-bottom: 6rem;
 
-
-
     @include resp-max("xxl") {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
         gap: 2rem;
     }
 
+    @include resp-max("m") {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
     @include resp-max("s") {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: 1rem;
         margin-bottom: 2rem;
     }
@@ -221,7 +220,8 @@
 
     &__btn {
         padding: 2rem 0.5rem 1rem;
-        width: 19rem;
+        width: 100%;
+        min-width: 0;
         background-color: var.$white;
         border: 1px solid transparent;
         border-color: transparent;
@@ -240,7 +240,6 @@
         -webkit-tap-highlight-color: transparent;
 
         @include resp-max("xxl") {
-            width: unset;
             font-size: 2rem;
         }
 

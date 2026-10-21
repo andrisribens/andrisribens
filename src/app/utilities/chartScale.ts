@@ -99,7 +99,6 @@ export function getChartScale(
     case 'temperature':
       return scaleFromData(numeric, { step: 2, padFraction: 0.1, minSpan: 4 });
     case 'wind':
-    case 'gust':
       return scaleFromData(numeric, { minAtZero: true, step: 1, minSpan: 2 });
     case 'humidity':
       return scaleFromData(numeric, {
@@ -111,13 +110,6 @@ export function getChartScale(
     case 'cloudarea':
       return scaleFromData(numeric, {
         minCap: 0,
-        maxCap: 100,
-        step: 10,
-        minSpan: 20,
-      });
-    case 'precipprob':
-      return scaleFromData(numeric, {
-        minAtZero: true,
         maxCap: 100,
         step: 10,
         minSpan: 20,

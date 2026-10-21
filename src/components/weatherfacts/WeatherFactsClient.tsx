@@ -229,13 +229,6 @@ const WeatherFactsClient = ({
     (_, index) => index >= 25 && index < 57,
   );
 
-  const allGusts = timeseries.map(
-    (timestamp) => timestamp.data.instant.details.wind_speed_of_gust ?? null,
-  );
-
-  const first24Gusts = allGusts.filter((_, index) => index < 25);
-  const next24Gusts = allGusts.filter((_, index) => index >= 25 && index < 57);
-
   const allUv = timeseries.map(
     (timestamp) =>
       timestamp.data.instant.details.ultraviolet_index_clear_sky ?? null,
@@ -243,16 +236,6 @@ const WeatherFactsClient = ({
 
   const first24Uv = allUv.filter((_, index) => index < 25);
   const next24Uv = allUv.filter((_, index) => index >= 25 && index < 57);
-
-  const allPrecipProb = timeseries.map(
-    (timestamp) =>
-      timestamp.data.next_1_hours?.details?.probability_of_precipitation ?? null,
-  );
-
-  const first24PrecipProb = allPrecipProb.filter((_, index) => index < 25);
-  const next24PrecipProb = allPrecipProb.filter(
-    (_, index) => index >= 25 && index < 57,
-  );
 
   const uvPointColors = first24Uv.map((uv) => getUvChartColor(uv));
   const nextUvPointColors = next24Uv.map((uv) => getUvChartColor(uv));
@@ -262,7 +245,6 @@ const WeatherFactsClient = ({
   const blueColor = 'rgba(99, 190, 255, 0.7)';
   const blueLightColor = 'rgba(170, 220, 255, 0.85)';
   const orangeColor = 'rgba(240, 188, 54, 0.7)';
-  const blackColor = 'rgba(0,0,0, 0.7)';
 
   const chartData = [
     {
@@ -373,24 +355,6 @@ const WeatherFactsClient = ({
     },
     {
       type: 'bar',
-      id: 'precipprob',
-      yAxisLabel: '%',
-      data: {
-        labels: first24ChartLabels,
-        datasets: [
-          {
-            label: 'Rain Chance',
-            data: first24PrecipProb,
-            backgroundColor: blueColor,
-            borderColor: blueColor,
-            borderWidth: 5,
-            tension: 0.4,
-          },
-        ],
-      },
-    },
-    {
-      type: 'bar',
       id: 'uv',
       yAxisLabel: 'UV',
       data: {
@@ -402,24 +366,6 @@ const WeatherFactsClient = ({
             backgroundColor: uvPointColors,
             borderColor: uvPointColors,
             borderWidth: 5,
-          },
-        ],
-      },
-    },
-    {
-      type: 'bar',
-      id: 'gust',
-      yAxisLabel: 'm/s',
-      data: {
-        labels: first24ChartLabels,
-        datasets: [
-          {
-            label: 'Wind Gusts',
-            data: first24Gusts,
-            backgroundColor: blackColor,
-            borderColor: blackColor,
-            borderWidth: 5,
-            tension: 0.4,
           },
         ],
       },
@@ -528,24 +474,6 @@ const WeatherFactsClient = ({
     },
     {
       type: 'bar',
-      id: 'precipprob',
-      yAxisLabel: '%',
-      data: {
-        labels: next24ChartLabels,
-        datasets: [
-          {
-            label: 'Rain Chance',
-            data: next24PrecipProb,
-            backgroundColor: blueColor,
-            borderColor: blueColor,
-            borderWidth: 5,
-            tension: 0.4,
-          },
-        ],
-      },
-    },
-    {
-      type: 'bar',
       id: 'uv',
       yAxisLabel: 'UV',
       data: {
@@ -557,24 +485,6 @@ const WeatherFactsClient = ({
             backgroundColor: nextUvPointColors,
             borderColor: nextUvPointColors,
             borderWidth: 5,
-          },
-        ],
-      },
-    },
-    {
-      type: 'bar',
-      id: 'gust',
-      yAxisLabel: 'm/s',
-      data: {
-        labels: next24ChartLabels,
-        datasets: [
-          {
-            label: 'Wind Gusts',
-            data: next24Gusts,
-            backgroundColor: blackColor,
-            borderColor: blackColor,
-            borderWidth: 5,
-            tension: 0.4,
           },
         ],
       },
