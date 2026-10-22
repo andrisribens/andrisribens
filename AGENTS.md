@@ -2,6 +2,8 @@
 
 Personal website with a weather forecast app. Stack: Next.js 16, React 19, TypeScript, pnpm.
 
+Runtime: Node.js `^22.23.4 || ^24.22.1 || >=26.12.1` (pinned in `.nvmrc` / `package.json` `engines`) for the Oct 2026 Node security releases.
+
 ## Key paths
 
 | Path | Purpose |
