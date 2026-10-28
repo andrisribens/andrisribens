@@ -12,6 +12,16 @@
         display: flex;
         justify-content: flex-end;
 
+        a {
+            display: inline-flex;
+            border-radius: 0.4rem;
+
+            &:focus-visible {
+                outline: 2px solid var.$focus;
+                outline-offset: 4px;
+            }
+        }
+
         img {
             height: 30rem;
             width: 30rem;

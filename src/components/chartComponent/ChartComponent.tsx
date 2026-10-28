@@ -253,7 +253,7 @@ const ChartComponent = ({
           color: 'rgba(128, 128, 128, 0.35)',
         },
         ticks: {
-          color: 'grey',
+          color: '#595959',
         },
       },
     },
@@ -315,18 +315,21 @@ const ChartComponent = ({
     '--chart-point-count': pointCount,
   } as React.CSSProperties;
 
+  const activeDataset = activeChart.data.datasets[0];
+
   return (
     <div className={styles.chart}>
-      {title && <h3 className={styles.chart__title}>{title}</h3>}
+      {title && <h2 className={styles.chart__title}>{title}</h2>}
       {timezoneLabel && (
         <p className={styles.chart__timezone}>{timezoneLabel}</p>
       )}
-      <div className={styles.chartbuttons}>
+      <div className={styles.chartbuttons} role="group" aria-label={`${title} metrics`}>
         {charts.map((chart) => (
           <button
             key={chart.id}
             type="button"
             onClick={() => setActiveChartId(chart.id)}
+            aria-pressed={chart.id === activeChartId}
             className={
               chart.id === activeChartId
                 ? `${styles.chartbuttons__btn} ${styles.active}`
@@ -342,7 +345,7 @@ const ChartComponent = ({
         <div className={styles.chart__unitRow}>
           <span className={styles.chart__yAxisUnit}>{activeChart.yAxisLabel}</span>
         </div>
-        <div className={styles.chart__frame}>
+        <div className={styles.chart__frame} aria-hidden>
           {renderYAxis('left')}
           <div className={styles.chart__outerWrapper}>
             <div className={styles.chart__plot} style={plotStyle}>
@@ -363,6 +366,46 @@ const ChartComponent = ({
           </div>
           {renderYAxis('right')}
         </div>
+        <table className={styles.chart__dataTable}>
+          <caption>
+            {title}
+            {activeDataset?.label ? ` — ${activeDataset.label}` : ''}
+            {activeChart.yAxisLabel ? ` (${activeChart.yAxisLabel})` : ''}
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              {activeChart.data.datasets.map((dataset: ChartDataset) => (
+                <th key={dataset.label} scope="col">
+                  {dataset.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {activeChart.data.labels.map((label: string, index: number) => (
+              <tr key={`${label}-${index}`}>
+                <th scope="row">{label}</th>
+                {activeChart.data.datasets.map((dataset: ChartDataset) => {
+                  const value = dataset.data[index];
+                  const wind = dataset.windDirections?.[index];
+                  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+                  const windLabel =
+                    typeof wind === 'number'
+                      ? ` ${directions[Math.round(wind / 45) % 8]}`
+                      : '';
+                  return (
+                    <td key={`${dataset.label}-${index}`}>
+                      {typeof value === 'number'
+                        ? `${value}${windLabel}`
+                        : '—'}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

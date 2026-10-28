@@ -81,11 +81,11 @@ const RecentPlaceChips = ({
                   : styles.recentPlaces__chip
               }
               key={`${place.osm_id}-${place.lat}-${place.lon}`}
-              aria-current={selected ? 'true' : undefined}
             >
               <button
                 type="button"
                 className={styles.recentPlaces__name}
+                aria-current={selected ? 'true' : undefined}
                 onClick={() => selectPlace(place, selected)}
               >
                 {place.name}

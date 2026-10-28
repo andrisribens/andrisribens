@@ -129,7 +129,11 @@ const WeatherFactsSection = ({
   }, [placeData, lat, lon]);
 
   if (!displayData && error) {
-    return <div className="container">{error}</div>;
+    return (
+      <div className="container">
+        <p role="alert">{error}</p>
+      </div>
+    );
   }
 
   // Place is set but data isn't ready yet — show loader (covers first paint

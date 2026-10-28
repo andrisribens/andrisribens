@@ -24,6 +24,7 @@
         font-weight: 400;
         margin: 0;
         align-self: flex-end;
+        color: var.$ink;
 
         @include resp-max ("m") {
             font-size: 1.6rem;
@@ -58,7 +59,7 @@
         font-size: 4.4rem;
         font-weight: 600;
         display: inline-block;
-        color: var.$white;
+        color: var.$ink;
         margin: 0;
 
         @include resp-max ("m") {
@@ -71,7 +72,7 @@
     }
 
     &__precipitationvaluelabel {
-        color: var.$white;
+        color: var.$ink;
         font-size: 3.2rem;
         margin: 0 0 0 0.3rem;
         display: inline-block;
@@ -87,7 +88,7 @@
     }
 
     &__precipitationlabel {
-        color: var.$white;
+        color: var.$ink;
         font-size: 1.2rem;
         margin: 0;
 
@@ -103,7 +104,7 @@
         display: flex;
         column-gap: 2rem;
         row-gap: 0.35rem;
-        color: var.$white;
+        color: var.$ink;
         font-size: 1.3rem;
 
         @include resp-max("s") {

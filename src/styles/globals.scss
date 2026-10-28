@@ -26,6 +26,39 @@ main {
     flex-direction: column;
 }
 
+.skipLink {
+    position: absolute;
+    left: 1.6rem;
+    top: 1.6rem;
+    z-index: 10000;
+    padding: 1.2rem 1.6rem;
+    background: var.$ink;
+    color: var.$white;
+    font-size: 1.4rem;
+    text-decoration: none;
+    border-radius: 0.4rem;
+    transform: translateY(-200%);
+    transition: transform 0.15s ease;
+
+    &:focus {
+        transform: translateY(0);
+        outline: 2px solid var.$focus;
+        outline-offset: 3px;
+    }
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 h1,
 h2,
 h3,
@@ -83,5 +116,11 @@ h6 {
         animation: spin2 3s ease-in-out infinite,
             spin 1.5s linear infinite;
         animation-direction: alternate;
+
+        @media (prefers-reduced-motion: reduce) {
+            animation: none;
+            stroke-dasharray: 400, 400;
+            stroke-dashoffset: -200px;
+        }
     }
 }

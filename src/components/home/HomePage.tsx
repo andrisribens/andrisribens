@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import * as motion from 'motion/react-client';
+import { useReducedMotion } from 'motion/react';
 import styles from './HomePage.module.scss';
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -68,12 +69,14 @@ function ProjectLink({
   step,
   spotlight,
   motionIndex,
+  reduceMotion,
 }: {
   project: Project;
   index: number;
   step: number;
   spotlight: boolean;
   motionIndex: number;
+  reduceMotion: boolean;
 }) {
   const label = String(index).padStart(2, '0');
   const className = spotlight
@@ -90,35 +93,35 @@ function ProjectLink({
       data-home-link
       custom={motionIndex}
       variants={linkFade}
-      initial="hidden"
+      initial={reduceMotion ? false : 'hidden'}
       animate="show"
+      transition={reduceMotion ? { duration: 0 } : undefined}
     >
       <span className={styles.index}>{label}</span>
       <span className={styles.name}>{project.name}</span>
       <span className={styles.arrow} aria-hidden>
         →
       </span>
+      <span className="visuallyHidden"> (opens in a new tab)</span>
     </motion.a>
   );
 }
 
 const HomePage = () => {
+  const reduceMotion = useReducedMotion() ?? false;
   const [drawn, setDrawn] = useState(false);
   const [spotlightHref, setSpotlightHref] = useState<string | null>(null);
   const pageRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef(0);
 
   useEffect(() => {
-    const reduce =
-      typeof window !== 'undefined' &&
-      window.matchMedia(REDUCE_MQ).matches;
-    if (reduce) {
+    if (reduceMotion) {
       setDrawn(true);
       return;
     }
     const id = requestAnimationFrame(() => setDrawn(true));
     return () => cancelAnimationFrame(id);
-  }, []);
+  }, [reduceMotion]);
 
   const updateSpotlight = useEffectEvent(() => {
     const root = pageRef.current;
@@ -199,8 +202,9 @@ const HomePage = () => {
           className={styles.intro}
           custom={0}
           variants={fade}
-          initial="hidden"
+          initial={reduceMotion ? false : 'hidden'}
           animate="show"
+          transition={reduceMotion ? { duration: 0 } : undefined}
         >
           <h1 className={styles.maker}>Andris Rībens</h1>
           <p className={styles.line}>Frontend developer</p>
@@ -217,8 +221,9 @@ const HomePage = () => {
               className={styles.groupLabel}
               custom={1}
               variants={fade}
-              initial="hidden"
+              initial={reduceMotion ? false : 'hidden'}
               animate="show"
+              transition={reduceMotion ? { duration: 0 } : undefined}
             >
               my hobby tinkerings
             </motion.p>
@@ -231,6 +236,7 @@ const HomePage = () => {
                   step={i}
                   motionIndex={i}
                   spotlight={spotlightHref === project.href}
+                  reduceMotion={reduceMotion}
                 />
               ))}
             </div>
@@ -241,8 +247,9 @@ const HomePage = () => {
               className={styles.groupLabel}
               custom={2}
               variants={fade}
-              initial="hidden"
+              initial={reduceMotion ? false : 'hidden'}
               animate="show"
+              transition={reduceMotion ? { duration: 0 } : undefined}
             >
               few of the things i got paid for
             </motion.p>
@@ -255,6 +262,7 @@ const HomePage = () => {
                   step={personal.length + i}
                   motionIndex={personal.length + i}
                   spotlight={spotlightHref === project.href}
+                  reduceMotion={reduceMotion}
                 />
               ))}
             </div>
@@ -266,8 +274,9 @@ const HomePage = () => {
           href="mailto:andris.ribens@gmail.com"
           custom={3}
           variants={fade}
-          initial="hidden"
+          initial={reduceMotion ? false : 'hidden'}
           animate="show"
+          transition={reduceMotion ? { duration: 0 } : undefined}
         >
           <span className={styles.contactLabel}>Contact</span>
           <span className={styles.contactMail}>andris.ribens@gmail.com</span>
@@ -277,8 +286,9 @@ const HomePage = () => {
           className={styles.closer}
           custom={4}
           variants={fade}
-          initial="hidden"
+          initial={reduceMotion ? false : 'hidden'}
           animate="show"
+          transition={reduceMotion ? { duration: 0 } : undefined}
         >
           Based in Amsterdam
         </motion.p>

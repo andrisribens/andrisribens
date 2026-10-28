@@ -4,6 +4,7 @@ import styles from './WeatherFacts.module.scss';
 import React, { Suspense } from 'react';
 import dayjs from 'dayjs';
 import * as motion from 'motion/react-client';
+import { useReducedMotion } from 'motion/react';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Image from 'next/image';
 import WeatherCard from '../weatherCard/WeatherCard';
@@ -23,6 +24,7 @@ import {
   getWindFeelLabel,
   getWindLevel,
   weatherIconSrc,
+  weatherSymbolLabel,
 } from '@/app/utilities/weatherTypes';
 import type { DaylightData, Place } from '@/app/utilities/actions';
 import {
@@ -56,6 +58,7 @@ const WeatherFactsClient = ({
   isLoading = false,
   error = null,
 }: WeatherFactsProps) => {
+  const reduceMotion = useReducedMotion();
   const units = weather.properties.meta.units;
   const timeseries = weather.properties.timeseries;
   const updatedAt = weather.properties.meta.updated_at;
@@ -240,7 +243,9 @@ const WeatherFactsClient = ({
   const uvPointColors = first24Uv.map((uv) => getUvChartColor(uv));
   const nextUvPointColors = next24Uv.map((uv) => getUvChartColor(uv));
 
-  const weatherIconPath = weatherIconSrc(in1h?.summary?.symbol_code);
+  const weatherSymbolCode = in1h?.summary?.symbol_code;
+  const weatherIconPath = weatherIconSrc(weatherSymbolCode);
+  const weatherConditionLabel = weatherSymbolLabel(weatherSymbolCode);
 
   const blueColor = 'rgba(99, 190, 255, 0.7)';
   const blueLightColor = 'rgba(170, 220, 255, 0.85)';
@@ -504,20 +509,20 @@ const WeatherFactsClient = ({
 
                 <motion.div
                   key={onePlace.name}
-                  initial={{ opacity: 0, x: -48 }}
+                  initial={reduceMotion ? false : { opacity: 0, x: -48 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -48 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, x: -48 }}
                   className={
                     (air_temperature ?? 0) <= 0
                       ? `${styles.weather__city} ${styles.cold}`
                       : styles.weather__city
                   }
                   transition={{
-                    duration: 0.9,
+                    duration: reduceMotion ? 0 : 0.9,
                     ease: [0, 0.71, 0.2, 1.01],
                   }}
                 >
-                  <h2>{onePlace.name}</h2>
+                  <h1>{onePlace.name}</h1>
                 </motion.div>
 
                 {placeCoordsLabel && (
@@ -530,7 +535,7 @@ const WeatherFactsClient = ({
                 <Image
                   className={styles.weather__image}
                   src={weatherIconPath}
-                  alt="weather description icon"
+                  alt={weatherConditionLabel}
                   width={240}
                   height={240}
                   priority
@@ -596,9 +601,9 @@ const WeatherFactsClient = ({
 
               {showInsights && (
                 <div className={styles.weather__insights}>
-                  <h3 className={styles.weather__sectiontitle}>
+                  <h2 className={styles.weather__sectiontitle}>
                     How it feels right now
-                  </h3>
+                  </h2>
 
                   <div className={styles.weather__insightlist}>
                   {comfortInsight && (
@@ -650,7 +655,7 @@ const WeatherFactsClient = ({
 
               {showDaylight && (
                 <div className={styles.weather__daylight}>
-                  <h3 className={styles.weather__sectiontitle}>Sun & moon</h3>
+                  <h2 className={styles.weather__sectiontitle}>Sun & moon</h2>
 
                   <div className={styles.weather__daylightlist}>
                     {nextSunEvent && (
@@ -682,7 +687,6 @@ const WeatherFactsClient = ({
                 <div
                   className={styles.weather__heroOverlay}
                   aria-busy="true"
-                  aria-live="polite"
                 >
                   <Loader />
                 </div>
@@ -696,9 +700,9 @@ const WeatherFactsClient = ({
             </div>
 
             <div className={styles.weather__section}>
-              <h3 className={styles.weather__sectiontitle}>
+              <h2 className={styles.weather__sectiontitle}>
                 Precipitation forecast for next 12 hours
-              </h3>
+              </h2>
 
               <div className={styles.weather__nextlist}>
                 {nextData.map(([key, value]) => {
@@ -713,7 +717,7 @@ const WeatherFactsClient = ({
                         .replace(/^./, (char) => char.toUpperCase())}
                       image={{
                         src: weatherIconSrc(symbolCode),
-                        alt: symbolCode ?? 'weather',
+                        alt: weatherSymbolLabel(symbolCode),
                       }}
                       precipitation={details?.precipitation_amount}
                       precipitationMin={details?.precipitation_amount_min}

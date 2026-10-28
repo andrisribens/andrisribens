@@ -14,18 +14,19 @@ const Footer = () => {
 
   return (
     <footer className={styles.footer}>
-      <div className={styles.footer__links}>
+      <nav className={styles.footer__links} aria-label="Related links">
         <Link
           target="_blank"
           rel="noopener noreferrer"
           href="https://www.kingofthebeach.me"
         >
           King of The Beach
+          <span className="visuallyHidden"> (opens in a new tab)</span>
         </Link>
         <Link href="/" rel="author">
           Made by Andris Rībens
         </Link>
-      </div>
+      </nav>
     </footer>
   );
 };

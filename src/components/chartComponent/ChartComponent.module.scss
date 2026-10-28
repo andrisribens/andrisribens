@@ -3,6 +3,7 @@
 
 
 .chart {
+    position: relative;
     margin: 3rem 0 0;
     width: 100%;
 
@@ -178,6 +179,23 @@
             font-size: 1.2rem;
         }
     }
+
+    // Keep in the accessibility tree but never extend page scroll
+    // (large nowrap tables as abspos can inflate document height).
+    &__dataTable {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1px;
+        height: 1px;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        border: 0;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        contain: strict;
+    }
 }
 
 .chartbuttons {
@@ -280,6 +298,11 @@
         &:hover::after,
         &:active::after {
             width: 100%;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var.$focus;
+            outline-offset: 3px;
         }
 
         &.active {

@@ -4,13 +4,13 @@ import Image from 'next/image';
 
 const WeatherTop: React.FC = () => {
   return (
-    <div className={styles.weatherTop}>
+    <header className={styles.weatherTop}>
       <div className="container">
         <div className={styles.weatherTop__inner}>
           <a href="/weather">
             <Image
               src="/img/logo8.png"
-              alt="Site logo"
+              alt="Weather Now"
               width={1000}
               height={1000}
               priority={true}
@@ -18,7 +18,7 @@ const WeatherTop: React.FC = () => {
           </a>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 

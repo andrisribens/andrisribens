@@ -37,7 +37,6 @@
         min-height: 4.4rem;
 
         @include resp-max('m') {
-            min-height: 3.2rem;
             padding: 0.1rem 0.1rem 0.1rem 0.8rem;
         }
 
@@ -84,12 +83,16 @@
         align-items: center;
 
         @include resp-max('m') {
-            min-height: 3.2rem;
             padding: 0.4rem 0.3rem 0.4rem 0;
         }
 
         @include resp-max('s') {
             font-size: 1.3rem;
+        }
+
+        &:focus-visible {
+            outline: 2px solid var.$focus;
+            outline-offset: 2px;
         }
     }
 
@@ -108,15 +111,16 @@
         min-height: 4.4rem;
         padding: 0;
         flex-shrink: 0;
-
-        @include resp-max('m') {
-            min-width: 3.2rem;
-            min-height: 3.2rem;
-        }
+        border-radius: 0.4rem;
 
         &:hover img,
         &:active img {
             filter: invert(1);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var.$focus;
+            outline-offset: 2px;
         }
     }
 }
@@ -129,5 +133,12 @@
 
     50% {
         opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .recentPlaces__chip--skeleton {
+        animation: none;
+        opacity: 0.7;
     }
 }

@@ -66,4 +66,6 @@ Copy `.env.example` to `.env.local` for local development.
 
 ## Cursor rules
 
-Project-specific agent guidance lives in `.cursor/rules/` (stack, Next.js, SCSS).
+Project-specific agent guidance lives in `.cursor/rules/` (stack, Next.js, SCSS, accessibility).
+
+Accessibility target: **WCAG 2.1 AA** — see `.cursor/rules/accessibility.mdc` for color tokens, semantics, focus, motion, and charts.

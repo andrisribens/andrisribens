@@ -70,7 +70,7 @@
 
     &__city {
         font-size: 7rem;
-        color: var.$orange;
+        color: var.$orange-sun;
         font-weight: 900;
 
         @include resp-max(1800) {
@@ -88,12 +88,15 @@
         }
 
         &.cold {
-            color: var.$blue;
+            color: var.$blue-sky;
         }
 
-        h2 {
+        h1 {
             margin: 0;
             line-height: 1.2;
+            // Match previous h2 sizing (UA stylesheet used 1.5em on the parent).
+            font-size: 1.5em;
+            font-weight: inherit;
         }
 
 

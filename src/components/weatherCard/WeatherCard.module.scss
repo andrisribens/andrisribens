@@ -52,10 +52,12 @@
     &__unit {
         font-size: 2.4rem;
         display: inline;
-        color: var.$orange;
+        // Large on desktop (3:1 OK); smaller breakpoints fall back to ink (4.5:1).
+        color: var.$orange-sun;
 
         @include resp-max("m") {
             font-size: 1.8rem;
+            color: var.$ink;
         }
 
         @include resp-max("s") {
@@ -90,7 +92,7 @@
     &__sublabel {
         font-size: 1.6rem;
         display: block;
-        color: var.$orange;
+        color: var.$gray;
         margin-top: 0.25rem;
 
         @include resp-max("s") {

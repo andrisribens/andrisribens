@@ -1,15 +1,27 @@
-$orange: orange;
-$white: white;
-$black: #212121;
-$gray: grey;
-$gray-light: rgba($gray, 0.6);
-$gray-lightest: rgba($gray, 0.3);
+// Brand / decorative (washes, borders, fills, hover — not body text)
+$orange: #ffa500;
 $blue: rgb(99, 190, 255);
 $blue-light: color-mix(in srgb, $blue 45%, white);
 
-// Craft homepage tokens (cool paper / ink — light, not flat white)
+// Large text (≥24px / bold ≥18.5px) — AA only needs 3:1, so these can stay bright
+$orange-sun: #f26e00; // ~3.0:1 on white — brightest solid orange that still passes large-text AA
+$blue-sky: #2b8fd0; // ~3.5:1 on white — sky, not navy
+
+// Focus rings (1.4.11 non-text contrast ≥3:1)
+$focus: #c45c00;
+
+// Small / meta text — AA normal text needs 4.5:1
+$gray: #595959;
+$gray-light: rgba($gray, 0.6);
+$gray-lightest: rgba($gray, 0.3);
+
+$white: white;
+$black: #212121;
+
+// Craft homepage tokens
 $paper: #f4f6f8;
 $ink: #1a1d21;
+$ink-muted: #4a5560; // ≥ 4.5:1 on $paper
 $rule: rgba($ink, 0.12);
 
 $bg: $white;

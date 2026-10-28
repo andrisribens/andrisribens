@@ -67,7 +67,7 @@ const NextCard = (cardInfo: CardInfo) => {
 
   return (
     <div className={styles.nextCard}>
-      <h3 className={styles.nextCard__title}>{cardInfo.title}</h3>
+      <p className={styles.nextCard__title}>{cardInfo.title}</p>
       <div className={styles.nextCard__main}>
         <Image
           src={cardInfo.image.src}

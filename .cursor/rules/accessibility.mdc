@@ -1,0 +1,52 @@
+---
+description: WCAG 2.1 AA accessibility conventions for UI and styles
+globs: src/**/*.{tsx,scss}
+alwaysApply: false
+---
+
+# Accessibility (WCAG 2.1 AA)
+
+Target **WCAG 2.1 Level AA** for all UI work.
+
+## Color tokens (`src/styles/_variables.scss`)
+
+| Token | Use |
+|-------|-----|
+| `$orange`, `$blue` | Decoration only (borders, fills, washes, hovers) — not small body text |
+| `$orange-sun`, `$blue-sky` | Large text only (≥24px / bold ≥18.5px) — city name, etc. (3:1 OK) |
+| `$gray`, `$ink`, `$ink-muted`, `$black` | Normal text (need ≥4.5:1 on white/paper) |
+| `$focus` | Focus rings (non-text contrast ≥3:1) |
+| Soft `$blue` + `$ink` | Sky surfaces (cards, footer) — prefer ink on soft blue over white on dark blue |
+
+Do not darken brand orange into brown for body text; use ink/gray for small type and keep sun tokens for large headings.
+
+## Semantics & structure
+
+- One meaningful `h1` per page; do not skip heading levels.
+- Landmarks: `main` (`#main-content`), `header`/`footer`/`nav` with labels where useful.
+- Keep the skip link in `layout.tsx` (`Skip to content` → `#main-content`).
+- Decorative images: `alt=""` + `aria-hidden`. Informative images: human-readable `alt` (e.g. `weatherSymbolLabel()`).
+- Name controls with `<label>`, `aria-label`, or `aria-labelledby` — placeholders are not names.
+
+## Keyboard & focus
+
+- All interactive controls must be keyboard operable.
+- Prefer soft focus styles that match the design (e.g. orange glow on the search input) when they remain visible; use `$focus` outline where a ring is needed.
+- Combobox / listbox (place search): focus stays on the input; options `tabIndex={-1}` + `aria-activedescendant`; highlight via active class, not a hard ring on mouse click.
+- Toggle groups: `aria-pressed` (or tabs) for selected state.
+
+## Motion & status
+
+- Honor `prefers-reduced-motion` for spinners, skeletons, and Motion/Framer animations.
+- Loaders: `role="status"` + accessible name (see `loading.tsx` / `.visuallyHidden`).
+- Errors: `role="alert"`; polite progress: `role="status"` / `aria-live="polite"`.
+
+## Charts & dense data
+
+- Canvas charts need a non-visual alternative (visually hidden data table or equivalent).
+- Hide alternatives with `clip-path` + `contain` + positioned 1×1 overflow hidden **inside** a `position: relative` chart — large sr-only tables must not inflate page scroll height.
+
+## Links
+
+- Meaningful link text (logo: “Weather Now”, not “Site logo”).
+- `target="_blank"` may stay for Weather Now (intentional mini-app); include a visually hidden “(opens in a new tab)” cue for new-tab links.

@@ -3,7 +3,7 @@
 
 .footer {
   background-color: var.$blue;
-  color: var.$white;
+  color: var.$ink;
   padding: 3rem;
 
   &__links {
@@ -17,7 +17,7 @@
     }
 
     a {
-      color: var.$white;
+      color: var.$ink;
       font-size: 1.4rem;
       line-height: 1.3;
       text-decoration: none;
@@ -41,8 +41,8 @@
         height: 1px;
         background: linear-gradient(
           to right,
-          rgba(var.$white, 0) 0%,
-          var.$white 25%
+          rgba(var.$ink, 0) 0%,
+          var.$ink 25%
         );
         display: block;
       }
@@ -51,6 +51,11 @@
         @include resp-min('m') {
           animation: line 1s ease-in-out;
         }
+      }
+
+      &:focus-visible {
+        outline: 2px solid var.$focus;
+        outline-offset: 3px;
       }
 
       &:active {

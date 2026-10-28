@@ -147,6 +147,76 @@ export function formatCoord(value: number): string {
 
 const WEATHER_SYMBOL_RE = /^[a-z0-9_]+$/;
 
+const WEATHER_SYMBOL_BASE_LABELS: Record<string, string> = {
+  clearsky: 'Clear sky',
+  fair: 'Fair',
+  partlycloudy: 'Partly cloudy',
+  cloudy: 'Cloudy',
+  fog: 'Fog',
+  rain: 'Rain',
+  lightrain: 'Light rain',
+  heavyrain: 'Heavy rain',
+  rainshowers: 'Rain showers',
+  lightrainshowers: 'Light rain showers',
+  heavyrainshowers: 'Heavy rain showers',
+  rainandthunder: 'Rain and thunder',
+  lightrainandthunder: 'Light rain and thunder',
+  heavyrainandthunder: 'Heavy rain and thunder',
+  rainshowersandthunder: 'Rain showers and thunder',
+  lightrainshowersandthunder: 'Light rain showers and thunder',
+  heavyrainshowersandthunder: 'Heavy rain showers and thunder',
+  sleet: 'Sleet',
+  lightsleet: 'Light sleet',
+  heavysleet: 'Heavy sleet',
+  sleetshowers: 'Sleet showers',
+  lightsleetshowers: 'Light sleet showers',
+  heavysleetshowers: 'Heavy sleet showers',
+  sleetandthunder: 'Sleet and thunder',
+  lightsleetandthunder: 'Light sleet and thunder',
+  heavysleetandthunder: 'Heavy sleet and thunder',
+  sleetshowersandthunder: 'Sleet showers and thunder',
+  lightsleetshowersandthunder: 'Light sleet showers and thunder',
+  heavysleetshowersandthunder: 'Heavy sleet showers and thunder',
+  snow: 'Snow',
+  lightsnow: 'Light snow',
+  heavysnow: 'Heavy snow',
+  snowshowers: 'Snow showers',
+  lightsnowshowers: 'Light snow showers',
+  heavysnowshowers: 'Heavy snow showers',
+  snowandthunder: 'Snow and thunder',
+  lightsnowandthunder: 'Light snow and thunder',
+  heavysnowandthunder: 'Heavy snow and thunder',
+  snowshowersandthunder: 'Snow showers and thunder',
+  lightsnowshowersandthunder: 'Light snow showers and thunder',
+  heavysnowshowersandthunder: 'Heavy snow showers and thunder',
+};
+
+const WEATHER_SYMBOL_PERIOD_LABELS: Record<string, string> = {
+  day: 'day',
+  night: 'night',
+  polartwilight: 'polar twilight',
+};
+
+export function weatherSymbolLabel(symbolCode?: string): string {
+  if (!symbolCode || !WEATHER_SYMBOL_RE.test(symbolCode)) {
+    return 'Weather condition';
+  }
+
+  const periodMatch = symbolCode.match(/^(.*)_(day|night|polartwilight)$/);
+  const base = periodMatch?.[1] ?? symbolCode;
+  const period = periodMatch?.[2];
+
+  const baseLabel =
+    WEATHER_SYMBOL_BASE_LABELS[base] ??
+    base.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/_/g, ' ');
+
+  if (period && WEATHER_SYMBOL_PERIOD_LABELS[period]) {
+    return `${baseLabel} (${WEATHER_SYMBOL_PERIOD_LABELS[period]})`;
+  }
+
+  return baseLabel;
+}
+
 export function weatherIconSrc(symbolCode?: string): string {
   const code =
     symbolCode && WEATHER_SYMBOL_RE.test(symbolCode)

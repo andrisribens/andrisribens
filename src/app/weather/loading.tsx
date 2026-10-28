@@ -1,7 +1,13 @@
 export default function loader() {
   return (
-    <div className="loader">
-      <svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+    <div className="loader" role="status" aria-live="polite">
+      <span className="visuallyHidden">Loading weather…</span>
+      <svg
+        viewBox="0 0 800 800"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        focusable="false"
+      >
         <circle
           className="loader__spin2"
           cx="400"

@@ -30,6 +30,7 @@ const PlaceInputInner = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const listboxId = useId();
+  const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -233,14 +234,20 @@ const PlaceInputInner = () => {
     <div className="container">
       <div className={styles.placeInput} ref={rootRef}>
         <div className={styles.placeInput__input}>
+          <label className={styles.placeInput__label} htmlFor={inputId}>
+            Search city or place
+          </label>
           <input
               ref={inputRef}
+              id={inputId}
               name="input-place"
               type="search"
               role="combobox"
               aria-expanded={showSuggestions}
               aria-controls={listboxId}
               aria-autocomplete="list"
+              aria-haspopup="listbox"
+              aria-busy={isLoading || undefined}
               aria-activedescendant={
                 activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined
               }
@@ -314,7 +321,9 @@ const PlaceInputInner = () => {
               aria-label="Place suggestions"
             >
               {isLoading && (
-                <p className={styles.placeInput__message}>Searching places…</p>
+                <p className={styles.placeInput__message} role="status">
+                  Searching places…
+                </p>
               )}
 
               {!isLoading && error && (
@@ -324,7 +333,9 @@ const PlaceInputInner = () => {
               )}
 
               {!isLoading && !error && hasSearched && suggestions.length === 0 && (
-                <p className={styles.placeInput__message}>No places found</p>
+                <p className={styles.placeInput__message} role="status">
+                  No places found
+                </p>
               )}
 
               {!isLoading &&
@@ -335,6 +346,7 @@ const PlaceInputInner = () => {
                     id={`${listboxId}-option-${index}`}
                     role="option"
                     type="button"
+                    tabIndex={-1}
                     aria-selected={index === activeIndex}
                     className={
                       index === activeIndex
